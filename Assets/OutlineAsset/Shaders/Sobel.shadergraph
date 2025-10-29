@@ -4452,15 +4452,15 @@
     ],
     "m_VertexContext": {
         "m_Position": {
-            "x": 4565.00048828125,
-            "y": 677.0000610351563
+            "x": 4911.00048828125,
+            "y": 665.0000610351563
         },
         "m_Blocks": []
     },
     "m_FragmentContext": {
         "m_Position": {
-            "x": 4565.0,
-            "y": 817.9999389648438
+            "x": 4911.00048828125,
+            "y": 806.0000610351563
         },
         "m_Blocks": [
             {
@@ -5044,7 +5044,7 @@
     "m_ObjectId": "05067531c953410eaf1f1ec244c56837",
     "m_Title": "Vertical Gradient",
     "m_Position": {
-        "x": -2639.000244140625,
+        "x": -2639.0,
         "y": 2300.0
     }
 }
@@ -5667,7 +5667,7 @@
     "m_Value": 1.0,
     "m_FloatType": 1,
     "m_RangeValues": {
-        "x": 1.0,
+        "x": 0.10000000149011612,
         "y": 10.0
     }
 }
@@ -7157,8 +7157,8 @@
     "m_ObjectId": "1c91c589a0dc4adab82f0d2a410330c5",
     "m_Title": "Vertical Gradient",
     "m_Position": {
-        "x": -2575.000244140625,
-        "y": -251.00006103515626
+        "x": -2575.0,
+        "y": -251.0
     }
 }
 
@@ -15311,7 +15311,7 @@
     "m_ObjectId": "7e45dff5b64e4501bb9592c197e33252",
     "m_Title": "Depth UVs",
     "m_Position": {
-        "x": -4087.00048828125,
+        "x": -4087.0,
         "y": 95.0
     }
 }
@@ -17388,8 +17388,8 @@
     "m_ObjectId": "960ebdc4000d42ddae393745d3864e42",
     "m_Title": "Normal UVs",
     "m_Position": {
-        "x": -4033.000732421875,
-        "y": 916.0000610351563
+        "x": -4033.0,
+        "y": 916.0
     }
 }
 
@@ -17693,8 +17693,8 @@
     "m_ObjectId": "9997c93d7fad4a04a3aeb0aec53fee66",
     "m_Title": "Horizontal Gradient",
     "m_Position": {
-        "x": -2639.000244140625,
-        "y": 1136.0001220703125
+        "x": -2639.0,
+        "y": 1136.0
     }
 }
 
@@ -25195,7 +25195,7 @@
     "m_ObjectId": "fde6e026a0f54cecbd2e436044fd202b",
     "m_Title": "Horizontal Gradient",
     "m_Position": {
-        "x": -2639.000244140625,
+        "x": -2639.0,
         "y": -1504.0
     }
 }

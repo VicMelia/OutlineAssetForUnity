@@ -68,7 +68,7 @@ public class OutlineEditor : Editor
         EditorGUI.indentLevel++;
         GUILayout.BeginVertical(GetBoxStyle(new Color(0.1f, 0.1f, 0.1f, 0.3f)));
         EditorGUILayout.LabelField("Depth Settings", EditorStyles.miniBoldLabel);
-        manager.OutlineThickness = EditorGUILayout.Slider("Outline Thickness", manager.OutlineThickness, 1f, 10f);
+        manager.OutlineThickness = EditorGUILayout.Slider("Outline Thickness", manager.OutlineThickness, 0.1f, 10f);
         manager.OutlineStrength = EditorGUILayout.Slider("Outline Opacity", manager.OutlineStrength, 0f, 1f);
         manager.Threshold = EditorGUILayout.Slider("Threshold", manager.Threshold, 0.1f, 2f);
         EditorGUI.indentLevel--;
@@ -83,7 +83,7 @@ public class OutlineEditor : Editor
             EditorGUI.indentLevel++;
             EditorGUILayout.LabelField("Normal Settings", EditorStyles.miniBoldLabel);
             manager.UseNormal = true;
-            manager.NormalThickness = EditorGUILayout.Slider("Normal Thickness", manager.NormalThickness, 0.1f, 10f);
+            manager.NormalThickness = EditorGUILayout.Slider("Normal Thickness", manager.NormalThickness, 0.1f, manager.OutlineThickness);
             manager.NormalStrength = EditorGUILayout.Slider("Normal Opacity", manager.NormalStrength, 0f, 1f);
             manager.NormalThreshold = EditorGUILayout.Slider("Normal Threshold", manager.NormalThreshold, 0.1f, 15f);
 

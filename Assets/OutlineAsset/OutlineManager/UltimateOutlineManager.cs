@@ -15,7 +15,7 @@ public class UltimateOutlineManager : MonoBehaviour
     public OutlineMode Mode = OutlineMode.DepthOnly;
 
     [Header("Outline Settings")]
-    [Range(1, 10)] public float OutlineThickness = 1f;
+    [Range(0.1f, 10)] public float OutlineThickness = 1f;
     [Range(0, 1)] public float OutlineStrength = 1f;
     [Range(0, 2)] public float Threshold = 0.3f;
     [ColorUsage(true, true)] public Color OutlineColor = Color.white;
