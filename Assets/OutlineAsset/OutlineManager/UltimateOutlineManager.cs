@@ -11,6 +11,10 @@ public class UltimateOutlineManager : MonoBehaviour
     [Header("Shader & Material Settings")]
     private Material _material;
 
+    [Header("Filter Mode")]
+    public OutlineFilter Filter = OutlineFilter.Sobel;
+    [Range(0, 5)] public int FilterSelector = 1;
+
     [Header("Outline Mode")]
     public OutlineMode Mode = OutlineMode.DepthOnly;
 
@@ -66,6 +70,18 @@ public class UltimateOutlineManager : MonoBehaviour
     [Header("Global Volume")]
     private Volume _sceneVolume;
 
+
+    public enum OutlineFilter
+    {
+        RobertsCross,
+        Sobel,
+        Prewitt,
+        Scharr,
+        Laplacian,
+        [InspectorName("DoG (Difference of Gaussians)")]
+        DoG
+
+    }
     public enum OutlineMode
     {
         DepthOnly,
@@ -143,43 +159,46 @@ public class UltimateOutlineManager : MonoBehaviour
             return;
         }
 
-        // Outline
+        //Filter
+        _material.SetInteger("_FilterSelector", FilterSelector);
+
+        //Outline
         _material.SetFloat("_OutlineThickness", OutlineThickness);
         _material.SetFloat("_OutlineStrength", OutlineStrength);
         _material.SetFloat("_Threshold", Threshold);
         _material.SetColor("_OutlineColor", OutlineColor);
         _material.SetFloat("_EdgeMin", EdgeMin);
 
-        // Noise
+        //Noise
         _material.SetFloat("_ApplyNoise", ApplyNoise ? 1f : 0f);
         _material.SetFloat("_AnimateNoise", AnimateNoise ? 1f : 0f);
         _material.SetFloat("_NoiseScale", NoiseScale);
         _material.SetVector("_NoiseStrength", NoiseStrength);
 
-        // Lighting
+        //Lighting
         _material.SetFloat("_ApplyLightColor", ApplyLightColor ? 1f : 0f);
         _material.SetFloat("_LightFactor", LightFactor);
         _material.SetFloat("_StepTime", StepTime);
 
-        // Normals
+        //Normals
         _material.SetFloat("_UseNormal", UseNormal ? 1f : 0f);
         _material.SetFloat("_NormalThreshold", NormalThreshold);
         _material.SetFloat("_NormalStrength", NormalStrength);
 
-        // Bloom
+        //Bloom
         _material.SetFloat("_UseBloom", UseBloom ? 1f : 0f);
         _material.SetFloat("_BloomIntensity", BloomIntensity);
         _material.SetColor("_BloomColor", BloomColor);
 
-        // Intermittent
+        //Intermittent
         _material.SetFloat("_UseIntermitent", UseIntermitent ? 1f : 0f);
         _material.SetFloat("_IntermitentSpeed", IntermitentSpeed);
 
-        // Camera
+        //Camera
         _material.SetFloat("_CameraOrtographic", CameraOrtographic ? 1f : 0f);
         _material.SetFloat("_NormalThickness", NormalThickness);
 
-        // Custom Texture
+        //Custom Texture
         _material.SetFloat("_CustomTexture", UseCustomTexture ? 1f : 0f);
         if (CustomTex != null)
             _material.SetTexture("_CustomTex", CustomTex);

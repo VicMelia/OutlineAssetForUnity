@@ -10,7 +10,6 @@ public class OutlineEditor : Editor
         var manager = (UltimateOutlineManager)target;
         serializedObject.Update();
 
-
         using (new EditorGUI.DisabledScope(true))
         {
             EditorGUILayout.ObjectField("Script", MonoScript.FromMonoBehaviour(manager), typeof(UltimateOutlineManager), false);
@@ -18,6 +17,11 @@ public class OutlineEditor : Editor
         EditorGUILayout.Space();
 
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+        Color filterSettingsColor = new Color(0.1f, 0.6f, 0.2f, 0.2f);
+        GUILayout.BeginVertical(GetBoxStyle(filterSettingsColor));
+        SetFilterSettings(target, manager);
+        GUILayout.EndVertical();
 
         Color outlineSettingsColor = new Color(0.2f, 0.4f, 0.5f, 0.2f);
         GUILayout.BeginVertical(GetBoxStyle(outlineSettingsColor));
@@ -54,6 +58,37 @@ public class OutlineEditor : Editor
         {
             EditorUtility.SetDirty(manager);
             SceneView.RepaintAll();
+        }
+    }
+
+    void SetFilterSettings(Object target, UltimateOutlineManager manager)
+    {
+        EditorGUILayout.LabelField("Filter Settings", EditorStyles.boldLabel);
+        manager.Filter = (OutlineFilter)EditorGUILayout.EnumPopup("Filter Mode", manager.Filter);
+        EditorGUILayout.Space();
+        manager.FilterSelector = GetFilterLevel(manager.Filter);
+    }
+
+    private int GetFilterLevel(OutlineFilter filter)
+    {
+        switch (filter)
+        {
+            case OutlineFilter.RobertsCross: 
+                return 0;
+
+            case OutlineFilter.Sobel:
+                return 1;
+
+            case OutlineFilter.Prewitt:
+                return 2;
+
+            case OutlineFilter.Scharr:
+                return 3;
+
+            case OutlineFilter.Laplacian:
+                return 4;
+
+            default: return 5;
         }
     }
 

@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SobelMat
-  m_Shader: {fileID: -6465566751694194690, guid: 6c2a3877e4a1950499eba5a53a3ea107, type: 3}
+  m_Name: ScharrMat
+  m_Shader: {fileID: -6465566751694194690, guid: b46d873f568a3044f907f25289499c36, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,15 +23,7 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _CameraDepthTexture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _CustomTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DepthTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -52,28 +44,26 @@ Material:
     - _AnimateNoise: 0
     - _ApplyLightColor: 0
     - _ApplyNoise: 0
-    - _BloomIntensity: 2.31
-    - _CameraOrtographic: 0
+    - _BloomIntensity: 3
     - _CustomTexture: 0
-    - _EdgeMin: 0.1
+    - _EdgeMin: 0
     - _IntermitentSpeed: 3
-    - _LightFactor: 1
-    - _NoiseScale: 200
-    - _NormalNoise: 0
+    - _LightFactor: 0.5
+    - _NoiseScale: 10
     - _NormalStrength: 1
-    - _NormalThickness: 0.1
-    - _NormalThreshold: 0.1
+    - _NormalThickness: 1
+    - _NormalThreshold: 5
     - _OutlineStrength: 1
     - _OutlineThickness: 1
     - _StepTime: 0.2
-    - _Threshold: 0.1
+    - _Threshold: 0.3
     - _UseBloom: 0
     - _UseIntermitent: 0
-    - _UseNormal: 1
+    - _UseNormal: 0
     m_Colors:
-    - _BloomColor: {r: 1, g: 1, b: 1, a: 1}
-    - _NoiseStrength: {r: 0.01, g: 0.01, b: 0, a: 0}
-    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
-    - _TexSize: {r: 20, g: 10, b: 0, a: 0}
+    - _BloomColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NoiseStrength: {r: 0, g: 0, b: 0, a: 0}
+    - _OutlineColor: {r: 0.7735849, g: 0.2225881, b: 0.2225881, a: 1}
+    - _TexSize: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

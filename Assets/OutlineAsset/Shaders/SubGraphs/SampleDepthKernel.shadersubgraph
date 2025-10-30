@@ -8,9 +8,6 @@
         },
         {
             "m_Id": "e7b3862e6b8b4151a1d371f02970c9f0"
-        },
-        {
-            "m_Id": "84bee71f3b694807bf9ee159cf28ffdc"
         }
     ],
     "m_Keywords": [],
@@ -448,9 +445,6 @@
         },
         {
             "m_Id": "e7b3862e6b8b4151a1d371f02970c9f0"
-        },
-        {
-            "m_Id": "84bee71f3b694807bf9ee159cf28ffdc"
         }
     ]
 }
@@ -855,29 +849,6 @@
     "m_Value": 1.0,
     "m_DefaultValue": 1.0,
     "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Internal.BooleanShaderProperty",
-    "m_ObjectId": "84bee71f3b694807bf9ee159cf28ffdc",
-    "m_Guid": {
-        "m_GuidSerialized": "22f141d9-1e36-4ef9-b2c5-bdb3a22607b1"
-    },
-    "m_Name": "CameraOrtographic?",
-    "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "CameraOrtographic?",
-    "m_DefaultReferenceName": "_CameraOrtographic",
-    "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
-    "m_UseCustomSlotLabel": false,
-    "m_CustomSlotLabel": "",
-    "m_DismissedVersion": 0,
-    "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
-    "m_Hidden": false,
-    "m_Value": false
 }
 
 {
