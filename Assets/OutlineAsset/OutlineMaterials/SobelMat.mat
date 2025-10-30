@@ -64,7 +64,7 @@ Material:
     - _NormalThickness: 2
     - _NormalThreshold: 1
     - _OutlineStrength: 1
-    - _OutlineThickness: 1
+    - _OutlineThickness: 1.88
     - _StepTime: 0.2
     - _Threshold: 0.3
     - _UseBloom: 0
