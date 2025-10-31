@@ -13,7 +13,7 @@ public class UltimateOutlineManager : MonoBehaviour
 
     [Header("Filter Mode")]
     public OutlineFilter Filter = OutlineFilter.Sobel;
-    [Range(0, 5)] public int FilterSelector = 1;
+    [Range(0f, 5f)] public float FilterSelector = 1;
 
     [Header("Outline Mode")]
     public OutlineMode Mode = OutlineMode.DepthOnly;
@@ -78,7 +78,7 @@ public class UltimateOutlineManager : MonoBehaviour
         Prewitt,
         Scharr,
         Laplacian,
-        [InspectorName("DoG (Difference of Gaussians)")]
+        [InspectorName("Difference of Gaussians (DoG)")]
         DoG
 
     }
@@ -160,7 +160,7 @@ public class UltimateOutlineManager : MonoBehaviour
         }
 
         //Filter
-        _material.SetInteger("_FilterSelector", FilterSelector);
+        _material.SetFloat("_FilterSelector", (int)FilterSelector);
 
         //Outline
         _material.SetFloat("_OutlineThickness", OutlineThickness);
