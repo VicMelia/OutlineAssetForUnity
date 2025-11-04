@@ -136,7 +136,7 @@ public class OutlineFeature : ScriptableRendererFeature
                 passData.source = colorSource;
                 passData.destination = destination;
                 passData.material = m_Material;
-                passData.depth = outlineDepth;
+                passData.depth = depth;
                 passData.normals = normals;
 
                 builder.UseTexture(passData.source, AccessFlags.Read);

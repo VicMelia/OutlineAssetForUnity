@@ -178,7 +178,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 3
+  near clip plane: 3.5
   far clip plane: 1000
   field of view: 70
   orthographic: 0
@@ -272,10 +272,10 @@ MonoBehaviour:
   Filter: 1
   FilterSelector: 1
   Mode: 0
-  OutlineThickness: 2.68
+  OutlineThickness: 1.22
   OutlineStrength: 1
   Threshold: 0.1
-  OutlineColor: {r: 0.09433961, g: 0.02180491, b: 0.02180491, a: 1}
+  OutlineColor: {r: 1, g: 1, b: 1, a: 1}
   EdgeMin: 0.1
   BlendMode: 0
   ApplyLightColor: 0
@@ -290,11 +290,11 @@ MonoBehaviour:
   distortionAxis: 2
   NoiseStrength: {x: 0.01, y: 0.01}
   UseNormal: 0
-  NormalThreshold: 0.62
-  NormalStrength: 1
-  NormalThickness: 1.17
+  NormalThreshold: 1
+  NormalStrength: 0.7
+  NormalThickness: 2
   UseBloom: 0
-  BloomIntensity: 2.06
+  BloomIntensity: 2
   BloomColor: {r: 1, g: 1, b: 1, a: 1}
   bloomEffect: 0
   UseIntermitent: 0
@@ -641,7 +641,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 158.385, z: 0}
---- !u!1 &1452671094
+--- !u!1 &1788554792
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -649,8 +649,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1452671096}
-  - component: {fileID: 1452671095}
+  - component: {fileID: 1788554794}
+  - component: {fileID: 1788554793}
   m_Layer: 0
   m_Name: Global Volume
   m_TagString: Untagged
@@ -658,13 +658,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1452671095
+--- !u!114 &1788554793
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1452671094}
+  m_GameObject: {fileID: 1788554792}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
@@ -675,13 +675,13 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 0}
---- !u!4 &1452671096
+--- !u!4 &1788554794
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1452671094}
+  m_GameObject: {fileID: 1788554792}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -807,4 +807,4 @@ SceneRoots:
   - {fileID: 1295702234}
   - {fileID: 626588830}
   - {fileID: 2140824481}
-  - {fileID: 1452671096}
+  - {fileID: 1788554794}

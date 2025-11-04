@@ -10,19 +10,23 @@ public class OutlineEditor : Editor
         var manager = (UltimateOutlineManager)target;
         serializedObject.Update();
 
+        bool hasChanged = false;
+
         using (new EditorGUI.DisabledScope(true))
         {
             EditorGUILayout.ObjectField("Script", MonoScript.FromMonoBehaviour(manager), typeof(UltimateOutlineManager), false);
         }
         EditorGUILayout.Space();
 
-        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUI.BeginChangeCheck();
 
-        Color filterSettingsColor = new Color(0.1f, 0.6f, 0.2f, 0.2f);
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        Color filterSettingsColor = new Color(0.3f, 0.5f, 0.8f, 0.2f);
         GUILayout.BeginVertical(GetBoxStyle(filterSettingsColor));
         SetFilterSettings(target, manager);
         GUILayout.EndVertical();
 
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         Color outlineSettingsColor = new Color(0.2f, 0.4f, 0.5f, 0.2f);
         GUILayout.BeginVertical(GetBoxStyle(outlineSettingsColor));
         SetOulineSettings(target, manager);
@@ -52,11 +56,15 @@ public class OutlineEditor : Editor
         SetCustomTextureSettings(target, manager);
         GUILayout.EndVertical();
 
-        serializedObject.ApplyModifiedProperties();
-
-        if (GUI.changed)
+        if (EditorGUI.EndChangeCheck())
         {
+            serializedObject.ApplyModifiedProperties();
             EditorUtility.SetDirty(manager);
+            hasChanged = true;
+        }
+
+        if (hasChanged)
+        {
             SceneView.RepaintAll();
         }
     }
@@ -92,6 +100,19 @@ public class OutlineEditor : Editor
         }
     }
 
+    private int GetMaxThickness(OutlineFilter filter)
+    {
+        switch (filter)
+        {
+            case OutlineFilter.Laplacian:
+                return 6;
+            case OutlineFilter.DoG:
+                return 7;
+            default:
+                return 10;
+        }
+    }
+
     void SetOulineSettings(Object target, UltimateOutlineManager manager)
     {
         EditorGUILayout.LabelField("Outline Settings", EditorStyles.boldLabel);
@@ -103,31 +124,31 @@ public class OutlineEditor : Editor
         EditorGUI.indentLevel++;
         GUILayout.BeginVertical(GetBoxStyle(new Color(0.1f, 0.1f, 0.1f, 0.3f)));
         EditorGUILayout.LabelField("Depth Settings", EditorStyles.miniBoldLabel);
-        manager.OutlineThickness = EditorGUILayout.Slider("Outline Thickness", manager.OutlineThickness, 0.1f, 10f);
+        manager.OutlineThickness = EditorGUILayout.Slider("Outline Thickness", manager.OutlineThickness, 0.1f, GetMaxThickness(manager.Filter));
         manager.OutlineStrength = EditorGUILayout.Slider("Outline Opacity", manager.OutlineStrength, 0f, 1f);
         manager.Threshold = EditorGUILayout.Slider("Threshold", manager.Threshold, 0.1f, 2f);
         EditorGUI.indentLevel--;
         EditorGUILayout.EndVertical();
 
-        //manager.EdgeMin = EditorGUILayout.FloatField("Edge Min", manager.EdgeMin);
-
-        if (manager.Mode == OutlineMode.DepthAndNormals)
+        switch (manager.Mode)
         {
-            EditorGUILayout.Space();
-            GUILayout.BeginVertical(GetBoxStyle(new Color(0.1f, 0.1f, 0.1f, 0.3f)));
-            EditorGUI.indentLevel++;
-            EditorGUILayout.LabelField("Normal Settings", EditorStyles.miniBoldLabel);
-            manager.UseNormal = true;
-            manager.NormalThickness = EditorGUILayout.Slider("Normal Thickness", manager.NormalThickness, 0.1f, manager.OutlineThickness);
-            manager.NormalStrength = EditorGUILayout.Slider("Normal Opacity", manager.NormalStrength, 0f, 1f);
-            manager.NormalThreshold = EditorGUILayout.Slider("Normal Threshold", manager.NormalThreshold, 0.1f, 15f);
+            case OutlineMode.DepthAndNormals:
+                EditorGUILayout.Space();
+                GUILayout.BeginVertical(GetBoxStyle(new Color(0.1f, 0.1f, 0.1f, 0.3f)));
+                EditorGUI.indentLevel++;
+                EditorGUILayout.LabelField("Normal Settings", EditorStyles.miniBoldLabel);
+                manager.UseNormal = true;
+                manager.NormalThickness = EditorGUILayout.Slider("Normal Thickness", manager.NormalThickness, 0.1f, manager.OutlineThickness);
+                manager.NormalStrength = EditorGUILayout.Slider("Normal Opacity", manager.NormalStrength, 0f, 1f);
+                manager.NormalThreshold = EditorGUILayout.Slider("Normal Threshold", manager.NormalThreshold, 0.1f, 15f);
 
-            EditorGUI.indentLevel--;
-            EditorGUILayout.EndVertical();
-        }
-        else
-        {
-            if (manager.UseNormal) manager.UseNormal = false;
+                EditorGUI.indentLevel--;
+                EditorGUILayout.EndVertical();
+                break;
+
+            default:
+                if (manager.UseNormal) manager.UseNormal = false;
+                break;
         }
 
         EditorGUILayout.Space();
@@ -204,8 +225,6 @@ public class OutlineEditor : Editor
             }
             EditorGUI.indentLevel--;
             GUILayout.EndVertical();
-
-
 
             EditorGUILayout.Space();
 
@@ -328,6 +347,7 @@ public class OutlineEditor : Editor
         manager.bloomEffect = (BloomEffect)EditorGUILayout.EnumPopup("Bloom Mode", manager.bloomEffect);
         if (manager.bloomEffect == BloomEffect.Simple)
         {
+            manager.OutlineColor = Color.white; //White base color is necessary
             if (manager.UseIntermitent) manager.UseIntermitent = false;
             EditorGUILayout.Space();
             manager.UseBloom = true;
@@ -380,7 +400,7 @@ public class OutlineEditor : Editor
     {
         GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
         Texture2D tex = new Texture2D(1, 1);
-        tex.SetPixel(0, 0, c); // color del fondo
+        tex.SetPixel(0, 0, c); //Background color
         tex.Apply();
         boxStyle.normal.background = tex;
         return boxStyle;

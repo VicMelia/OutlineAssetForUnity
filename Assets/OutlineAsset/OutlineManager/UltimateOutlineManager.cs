@@ -147,7 +147,7 @@ public class UltimateOutlineManager : MonoBehaviour
             Debug.LogWarning("UltimateOutlineManager: No se encontró el material de OutlineFeature. Asegúrate de que la feature esté activa en el Renderer.");
         }
         Camera camera = Camera.main;
-        camera.nearClipPlane = 3f;
+        camera.nearClipPlane = 3.5f;
         camera.farClipPlane = 1000f;
         SetBloom();
     }
@@ -156,7 +156,16 @@ public class UltimateOutlineManager : MonoBehaviour
     {
         if (_material == null)
         {
-            return;
+            if (OutlineFeature.SharedOutlineMaterial != null)
+            {
+                _material = OutlineFeature.SharedOutlineMaterial;
+                Debug.Log("Material asignado correctamente.");
+            }
+            else
+            {
+                Debug.LogWarning("Esperando a que OutlineFeature inicialice su material...");
+                return;
+            }
         }
 
         //Filter
