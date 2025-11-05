@@ -87,8 +87,6 @@ public class OutlineFeature : ScriptableRendererFeature
             //if (!cameraData.requiresDepthTexture) return;
             //if (cameraData.renderType != CameraRenderType.Base) return;
             var depth = resourceData.cameraDepthTexture;
-
-
             var descDepth = renderGraph.GetTextureDesc(depth);
             descDepth.name = "DepthOutput";
             TextureHandle outlineDepth = renderGraph.CreateTexture(descDepth);
@@ -113,15 +111,10 @@ public class OutlineFeature : ScriptableRendererFeature
 
                 var rendererList = renderGraph.CreateRendererList(rendererListDesc);
                 builder.UseRendererList(rendererList);
-
-                //builder.UseTexture(passData.depth, AccessFlags.Write);
                 builder.SetRenderAttachmentDepth(passData.depth, AccessFlags.Write);
                 builder.SetRenderFunc((DepthPrepassData data, RasterGraphContext ctx) =>
                 {
-
                     ctx.cmd.DrawRendererList(rendererList);
-
-
                 });
             }
 
@@ -136,14 +129,29 @@ public class OutlineFeature : ScriptableRendererFeature
                 passData.source = colorSource;
                 passData.destination = destination;
                 passData.material = m_Material;
-                passData.depth = depth;
+                passData.depth = outlineDepth;
                 passData.normals = normals;
+                passData.cullingResults = frameData.Get<UniversalRenderingData>().cullResults;
+                passData.cameraData = cameraData;
+
+                var blockLayer = LayerMask.NameToLayer("Block");
+                var mask = 1 << blockLayer;
 
                 builder.UseTexture(passData.source, AccessFlags.Read);
                 builder.UseTexture(passData.depth, AccessFlags.Read);
-                
                 builder.UseTexture(passData.normals, AccessFlags.Read);
                 builder.SetRenderAttachment(passData.destination, 0);
+
+                var rendererListDesc = new RendererListDesc(new ShaderTagId("UniversalForward"), passData.cullingResults, passData.cameraData.camera)
+                {
+                    sortingCriteria = SortingCriteria.CommonOpaque,
+                    rendererConfiguration = PerObjectData.None,
+                    renderQueueRange = RenderQueueRange.opaque,
+                    layerMask = mask
+                };
+
+                var rendererList = renderGraph.CreateRendererList(rendererListDesc);
+                builder.UseRendererList(rendererList);
 
                 builder.SetRenderFunc((PassData data, RasterGraphContext ctx) =>
                 {
@@ -151,10 +159,43 @@ public class OutlineFeature : ScriptableRendererFeature
                     data.material.SetTexture("_CameraNormalsTexture", data.normals);
 
                     Blitter.BlitTexture(ctx.cmd, data.source, new Vector4(1, 1, 0, 0), data.material, 0);
+                    ctx.cmd.DrawRendererList(rendererList);
                 });
             }
 
             resourceData.cameraColor = destination;
+
+            var descFinalDepth = renderGraph.GetTextureDesc(outlineDepth);
+            descFinalDepth.name = "DepthOutput";
+            TextureHandle outputDepth = renderGraph.CreateTexture(descFinalDepth);
+
+            using (var builder = renderGraph.AddRasterRenderPass<DepthPrepassData>("Depth Pass 2", out var passData))
+            {
+                passData.depth = outputDepth;
+                passData.cullingResults = frameData.Get<UniversalRenderingData>().cullResults;
+                passData.cameraData = cameraData;
+                passData.renderingData = renderingData;
+
+                var blockLayer = LayerMask.NameToLayer("Block");
+                var mask = ~(1 << blockLayer);
+
+                var rendererListDesc = new RendererListDesc(new ShaderTagId("DepthOnly"), passData.cullingResults, passData.cameraData.camera)
+                {
+                    sortingCriteria = SortingCriteria.CommonOpaque,
+                    rendererConfiguration = PerObjectData.None,
+                    renderQueueRange = RenderQueueRange.opaque,
+                    layerMask = mask
+                };
+
+                var rendererList = renderGraph.CreateRendererList(rendererListDesc);
+                builder.UseRendererList(rendererList);
+                builder.SetRenderAttachmentDepth(resourceData.cameraDepthTexture, AccessFlags.Write);
+                builder.SetRenderFunc((DepthPrepassData data, RasterGraphContext ctx) =>
+                {
+                    ctx.cmd.DrawRendererList(rendererList);
+                });
+            }
+
         }
 
         class DepthPrepassData
@@ -172,6 +213,16 @@ public class OutlineFeature : ScriptableRendererFeature
             public TextureHandle depth;
             public TextureHandle normals;
             public Material material;
+            public CullingResults cullingResults;
+            public UniversalCameraData cameraData;
+        }
+
+        class DepthPostpass
+        {
+            public TextureHandle depth;
+            public CullingResults cullingResults;
+            public UniversalCameraData cameraData;
+            public UniversalRenderingData renderingData;
         }
     }
 }
