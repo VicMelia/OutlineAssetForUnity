@@ -14,14 +14,14 @@ public class OutlineFeature : ScriptableRendererFeature
     public RenderPassEvent injectionPoint = RenderPassEvent.BeforeRenderingPostProcessing;
     public Material material;
     public static Material SharedOutlineMaterial { get; private set; }
+    public static OutlineFeatureSettings SharedSettings { get; private set; }
 
     /// <inheritdoc/>
     public override void Create()
     {
         m_ScriptablePass = new OutlineFeaturePass(settings);
-
-        // Configures where the render pass should be injected.
         m_ScriptablePass.renderPassEvent = injectionPoint;
+        SharedSettings = settings;
 
         if (material != null)
             SharedOutlineMaterial = material;
@@ -41,6 +41,7 @@ public class OutlineFeature : ScriptableRendererFeature
     {
         base.Dispose(disposing);
         SharedOutlineMaterial = null;
+        SharedSettings = null;
     }
 
     // Here you can inject one or multiple render passes in the renderer.
@@ -56,7 +57,8 @@ public class OutlineFeature : ScriptableRendererFeature
     [Serializable]
     public class OutlineFeatureSettings
     {
-
+        [Tooltip("Layers excluded from outline effect")]
+        public LayerMask excludedLayerMask = 0;
     }
 
     class OutlineFeaturePass : ScriptableRenderPass
@@ -98,8 +100,7 @@ public class OutlineFeature : ScriptableRendererFeature
                 passData.cameraData = cameraData;
                 passData.renderingData = renderingData;
 
-                var blockLayer = LayerMask.NameToLayer("Block");
-                var mask = ~(1 << blockLayer);
+                var mask = ~settings.excludedLayerMask.value;
 
                 var rendererListDesc = new RendererListDesc(new ShaderTagId("DepthOnly"), passData.cullingResults, passData.cameraData.camera)
                 {
@@ -134,8 +135,7 @@ public class OutlineFeature : ScriptableRendererFeature
                 passData.cullingResults = frameData.Get<UniversalRenderingData>().cullResults;
                 passData.cameraData = cameraData;
 
-                var blockLayer = LayerMask.NameToLayer("Block");
-                var mask = 1 << blockLayer;
+                var mask = settings.excludedLayerMask.value;
 
                 builder.UseTexture(passData.source, AccessFlags.Read);
                 builder.UseTexture(passData.depth, AccessFlags.Read);
@@ -176,8 +176,7 @@ public class OutlineFeature : ScriptableRendererFeature
                 passData.cameraData = cameraData;
                 passData.renderingData = renderingData;
 
-                var blockLayer = LayerMask.NameToLayer("Block");
-                var mask = ~(1 << blockLayer);
+                var mask = ~settings.excludedLayerMask.value;
 
                 var rendererListDesc = new RendererListDesc(new ShaderTagId("DepthOnly"), passData.cullingResults, passData.cameraData.camera)
                 {

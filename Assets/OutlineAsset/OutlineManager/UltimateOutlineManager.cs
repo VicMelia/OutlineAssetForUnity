@@ -70,6 +70,9 @@ public class UltimateOutlineManager : MonoBehaviour
     [Header("Global Volume")]
     private Volume _sceneVolume;
 
+    [Header("Layer Mask")]
+    public LayerMask excludedLayerMask = 0;
+
 
     public enum OutlineFilter
     {
