@@ -9,7 +9,7 @@ using UnityEngine.Rendering.Universal;
 public class UltimateOutlineManager : MonoBehaviour
 {
     [Header("Shader & Material Settings")]
-    private Material _material;
+    public Material outlineMaterial;
 
     [Header("Filter Mode")]
     public OutlineFilter Filter = OutlineFilter.Sobel;
@@ -21,9 +21,9 @@ public class UltimateOutlineManager : MonoBehaviour
     [Header("Outline Settings")]
     [Range(0.1f, 10)] public float OutlineThickness = 1f;
     [Range(0, 1)] public float OutlineStrength = 1f;
-    [Range(0, 2)] public float Threshold = 0.3f;
+    [Range(0, 2)] public float Threshold = 0.05f;
     [ColorUsage(true, true)] public Color OutlineColor = Color.white;
-    public float EdgeMin = 0.1f;
+    public float EdgeMin = 0.01f;
 
     [Header("Light Blend")]
     public LightBlend BlendMode = LightBlend.Off;
@@ -72,7 +72,6 @@ public class UltimateOutlineManager : MonoBehaviour
 
     [Header("Layer Mask")]
     public LayerMask excludedLayerMask = 0;
-
 
     public enum OutlineFilter
     {
@@ -143,25 +142,25 @@ public class UltimateOutlineManager : MonoBehaviour
     {
         if (OutlineFeature.SharedOutlineMaterial != null)
         {
-            _material = OutlineFeature.SharedOutlineMaterial;
+            outlineMaterial = OutlineFeature.SharedOutlineMaterial;
         }
         else
         {
             Debug.LogWarning("UltimateOutlineManager: No se encontró el material de OutlineFeature. Asegúrate de que la feature esté activa en el Renderer.");
         }
         Camera camera = Camera.main;
-        camera.nearClipPlane = 3.5f;
+        camera.nearClipPlane = 3f;
         camera.farClipPlane = 1000f;
         SetBloom();
     }
 
     private void Update()
     {
-        if (_material == null)
+        if (outlineMaterial == null)
         {
             if (OutlineFeature.SharedOutlineMaterial != null)
             {
-                _material = OutlineFeature.SharedOutlineMaterial;
+                outlineMaterial = OutlineFeature.SharedOutlineMaterial;
                 Debug.Log("Material asignado correctamente.");
             }
             else
@@ -172,49 +171,49 @@ public class UltimateOutlineManager : MonoBehaviour
         }
 
         //Filter
-        _material.SetFloat("_FilterSelector", (int)FilterSelector);
+        outlineMaterial.SetFloat("_FilterSelector", (int)FilterSelector);
 
         //Outline
-        _material.SetFloat("_OutlineThickness", OutlineThickness);
-        _material.SetFloat("_OutlineStrength", OutlineStrength);
-        _material.SetFloat("_Threshold", Threshold);
-        _material.SetColor("_OutlineColor", OutlineColor);
-        _material.SetFloat("_EdgeMin", EdgeMin);
+        outlineMaterial.SetFloat("_OutlineThickness", OutlineThickness);
+        outlineMaterial.SetFloat("_OutlineStrength", OutlineStrength);
+        outlineMaterial.SetFloat("_Threshold", Threshold);
+        outlineMaterial.SetColor("_OutlineColor", OutlineColor);
+        outlineMaterial.SetFloat("_EdgeMin", EdgeMin);
 
         //Noise
-        _material.SetFloat("_ApplyNoise", ApplyNoise ? 1f : 0f);
-        _material.SetFloat("_AnimateNoise", AnimateNoise ? 1f : 0f);
-        _material.SetFloat("_NoiseScale", NoiseScale);
-        _material.SetVector("_NoiseStrength", NoiseStrength);
+        outlineMaterial.SetFloat("_ApplyNoise", ApplyNoise ? 1f : 0f);
+        outlineMaterial.SetFloat("_AnimateNoise", AnimateNoise ? 1f : 0f);
+        outlineMaterial.SetFloat("_NoiseScale", NoiseScale);
+        outlineMaterial.SetVector("_NoiseStrength", NoiseStrength);
 
         //Lighting
-        _material.SetFloat("_ApplyLightColor", ApplyLightColor ? 1f : 0f);
-        _material.SetFloat("_LightFactor", LightFactor);
-        _material.SetFloat("_StepTime", StepTime);
+        outlineMaterial.SetFloat("_ApplyLightColor", ApplyLightColor ? 1f : 0f);
+        outlineMaterial.SetFloat("_LightFactor", LightFactor);
+        outlineMaterial.SetFloat("_StepTime", StepTime);
 
         //Normals
-        _material.SetFloat("_UseNormal", UseNormal ? 1f : 0f);
-        _material.SetFloat("_NormalThreshold", NormalThreshold);
-        _material.SetFloat("_NormalStrength", NormalStrength);
+        outlineMaterial.SetFloat("_UseNormal", UseNormal ? 1f : 0f);
+        outlineMaterial.SetFloat("_NormalThreshold", NormalThreshold);
+        outlineMaterial.SetFloat("_NormalStrength", NormalStrength);
 
         //Bloom
-        _material.SetFloat("_UseBloom", UseBloom ? 1f : 0f);
-        _material.SetFloat("_BloomIntensity", BloomIntensity);
-        _material.SetColor("_BloomColor", BloomColor);
+        outlineMaterial.SetFloat("_UseBloom", UseBloom ? 1f : 0f);
+        outlineMaterial.SetFloat("_BloomIntensity", BloomIntensity);
+        outlineMaterial.SetColor("_BloomColor", BloomColor);
 
         //Intermittent
-        _material.SetFloat("_UseIntermitent", UseIntermitent ? 1f : 0f);
-        _material.SetFloat("_IntermitentSpeed", IntermitentSpeed);
+        outlineMaterial.SetFloat("_UseIntermitent", UseIntermitent ? 1f : 0f);
+        outlineMaterial.SetFloat("_IntermitentSpeed", IntermitentSpeed);
 
         //Camera
-        _material.SetFloat("_CameraOrtographic", CameraOrtographic ? 1f : 0f);
-        _material.SetFloat("_NormalThickness", NormalThickness);
+        outlineMaterial.SetFloat("_CameraOrtographic", CameraOrtographic ? 1f : 0f);
+        outlineMaterial.SetFloat("_NormalThickness", NormalThickness);
 
         //Custom Texture
-        _material.SetFloat("_CustomTexture", UseCustomTexture ? 1f : 0f);
+        outlineMaterial.SetFloat("_CustomTexture", UseCustomTexture ? 1f : 0f);
         if (CustomTex != null)
-            _material.SetTexture("_CustomTex", CustomTex);
-        _material.SetVector("_TexSize", TexSize);
+            outlineMaterial.SetTexture("_CustomTex", CustomTex);
+        outlineMaterial.SetVector("_TexSize", TexSize);
 
         //Global volume (Bloom)
         if (_sceneVolume != null && _sceneVolume.profile != null)
@@ -225,7 +224,6 @@ public class UltimateOutlineManager : MonoBehaviour
                 bloom.tint.value = BloomColor;
             }
         }
-
     }
 
     private void SetBloom()

@@ -3,6 +3,8 @@ using UnityEditor;
 using static UltimateOutlineManager;
 using static OutlineFeature;
 using UnityEditorInternal;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering;
 
 [CustomEditor(typeof(UltimateOutlineManager))]
 public class OutlineEditor : Editor
@@ -75,51 +77,42 @@ public class OutlineEditor : Editor
         }
     }
 
-    void SetFilterSettings(Object target, UltimateOutlineManager manager)
+    private void SetFilterSettings(Object target, UltimateOutlineManager manager)
     {
         EditorGUILayout.LabelField("Filter Settings", EditorStyles.boldLabel);
-        manager.Filter = (OutlineFilter)EditorGUILayout.EnumPopup("Filter Mode", manager.Filter);
+        var newFilter = (OutlineFilter)EditorGUILayout.EnumPopup("Filter Mode", manager.Filter);
         EditorGUILayout.Space();
+
+        if (newFilter != manager.Filter)
+        {
+            manager.Filter = newFilter;
+            manager.FilterSelector = GetFilterLevel(newFilter);
+            string materialFolder = "Assets/OutlineAsset/OutlineMaterials";
+            
+            Material newMat = GetFilterMaterial(materialFolder, newFilter);
+            if (newMat != null)
+            {
+                SharedOutlineMaterial = newMat;
+                var outlineFeature = GetOutlineFeature(); 
+                if (outlineFeature != null)
+                {
+                    outlineFeature.material = newMat;
+                    EditorUtility.SetDirty(outlineFeature);
+                    AssetDatabase.SaveAssets();
+                }
+
+                manager.outlineMaterial = newMat; //updates material properties
+                EditorUtility.SetDirty(manager);
+            }
+            else
+            {
+                Debug.LogWarning($"Material for filter {newFilter} not found in {materialFolder}");
+            }
+        }
         manager.FilterSelector = GetFilterLevel(manager.Filter);
     }
 
-    private int GetFilterLevel(OutlineFilter filter)
-    {
-        switch (filter)
-        {
-            case OutlineFilter.RobertsCross: 
-                return 0;
-
-            case OutlineFilter.Sobel:
-                return 1;
-
-            case OutlineFilter.Prewitt:
-                return 2;
-
-            case OutlineFilter.Scharr:
-                return 3;
-
-            case OutlineFilter.Laplacian:
-                return 4;
-
-            default: return 5;
-        }
-    }
-
-    private int GetMaxThickness(OutlineFilter filter)
-    {
-        switch (filter)
-        {
-            case OutlineFilter.Laplacian:
-                return 6;
-            case OutlineFilter.DoG:
-                return 7;
-            default:
-                return 10;
-        }
-    }
-
-    void SetOulineSettings(Object target, UltimateOutlineManager manager)
+    private void SetOulineSettings(Object target, UltimateOutlineManager manager)
     {
         EditorGUILayout.LabelField("Outline Settings", EditorStyles.boldLabel);
         manager.Mode = (OutlineMode)EditorGUILayout.EnumPopup("Outline Mode", manager.Mode);
@@ -132,7 +125,7 @@ public class OutlineEditor : Editor
         EditorGUILayout.LabelField("Depth Settings", EditorStyles.miniBoldLabel);
         manager.OutlineThickness = EditorGUILayout.Slider("Outline Thickness", manager.OutlineThickness, 0.1f, GetMaxThickness(manager.Filter));
         manager.OutlineStrength = EditorGUILayout.Slider("Outline Opacity", manager.OutlineStrength, 0f, 1f);
-        manager.Threshold = EditorGUILayout.Slider("Threshold", manager.Threshold, 0.1f, 2f);
+        manager.Threshold = EditorGUILayout.Slider("Threshold", manager.Threshold, 0.05f, 1f);
         EditorGUI.indentLevel--;
         EditorGUILayout.EndVertical();
 
@@ -161,7 +154,7 @@ public class OutlineEditor : Editor
 
     }
 
-    void SetLightSettings(Object target, UltimateOutlineManager manager)
+    private void SetLightSettings(Object target, UltimateOutlineManager manager)
     {
 
         EditorGUILayout.LabelField("Light Color", EditorStyles.boldLabel);
@@ -179,7 +172,7 @@ public class OutlineEditor : Editor
         EditorGUILayout.Space();
     }
 
-    void SetNoiseSettings(Object target, UltimateOutlineManager manager)
+    private void SetNoiseSettings(Object target, UltimateOutlineManager manager)
     {
 
         EditorGUILayout.LabelField("Noise Settings", EditorStyles.boldLabel);
@@ -347,7 +340,7 @@ public class OutlineEditor : Editor
         EditorGUILayout.Space();
     }
 
-    void SetBloomSettings(Object target, UltimateOutlineManager manager)
+    private void SetBloomSettings(Object target, UltimateOutlineManager manager)
     {
         EditorGUILayout.LabelField("Bloom", EditorStyles.boldLabel);
         manager.bloomEffect = (BloomEffect)EditorGUILayout.EnumPopup("Bloom Mode", manager.bloomEffect);
@@ -378,7 +371,7 @@ public class OutlineEditor : Editor
         EditorGUILayout.Space();
     }
 
-    void SetCustomTextureSettings(Object target, UltimateOutlineManager manager)
+    private void SetCustomTextureSettings(Object target, UltimateOutlineManager manager)
     {
         EditorGUILayout.LabelField("Custom Texture (Advanced)", EditorStyles.boldLabel);
         manager.textureEffect = (TextureEffect)EditorGUILayout.EnumPopup("Custom Texture", manager.textureEffect);
@@ -402,7 +395,7 @@ public class OutlineEditor : Editor
         }
     }
 
-    void SetLayerSettings(Object target, UltimateOutlineManager manager)
+    private void SetLayerSettings(Object target, UltimateOutlineManager manager)
     {
         EditorGUILayout.LabelField("Layer Mask", EditorStyles.boldLabel);
         manager.excludedLayerMask = LayerMaskField("Exclude from", manager.excludedLayerMask);
@@ -412,7 +405,7 @@ public class OutlineEditor : Editor
         }
     }
 
-    GUIStyle GetBoxStyle(Color c)
+    private GUIStyle GetBoxStyle(Color c)
     {
         GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
         Texture2D tex = new Texture2D(1, 1);
@@ -422,7 +415,43 @@ public class OutlineEditor : Editor
         return boxStyle;
     }
 
-    LayerMask LayerMaskField(string label, LayerMask selected)
+    private int GetFilterLevel(OutlineFilter filter)
+    {
+        switch (filter)
+        {
+            case OutlineFilter.RobertsCross: 
+                return 0;
+
+            case OutlineFilter.Sobel:
+                return 1;
+
+            case OutlineFilter.Prewitt:
+                return 2;
+
+            case OutlineFilter.Scharr:
+                return 3;
+
+            case OutlineFilter.Laplacian:
+                return 4;
+
+            default: return 5;
+        }
+    }
+
+    private int GetMaxThickness(OutlineFilter filter)
+    {
+        switch (filter)
+        {
+            case OutlineFilter.Laplacian:
+                return 6;
+            case OutlineFilter.DoG:
+                return 7;
+            default:
+                return 8;
+        }
+    }
+
+    private LayerMask LayerMaskField(string label, LayerMask selected)
     {
         var layers = InternalEditorUtility.layers;
         var layerNumbers = new int[layers.Length];
@@ -434,9 +463,10 @@ public class OutlineEditor : Editor
         for (int i = 0; i < layers.Length; i++)
         {
             if (((1 << layerNumbers[i]) & selected.value) > 0)
+            {
                 maskWithoutEmpty |= (1 << i);
+            }
         }
-
         maskWithoutEmpty = EditorGUILayout.MaskField(label, maskWithoutEmpty, layers);
 
         int mask = 0;
@@ -450,5 +480,66 @@ public class OutlineEditor : Editor
         return selected;
     }
 
+    private Material GetFilterMaterial(string materialFolder, OutlineFilter newFilter)
+    {
+        string materialName = $"Outline_{newFilter}";
+        string[] guids = AssetDatabase.FindAssets($"{materialName} t:Material", new[] { materialFolder });
 
+        if (guids.Length > 0)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+            Material newMat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            return newMat;
+        }
+        else
+        {
+            Debug.LogWarning($" {materialName} not found in {materialFolder}");
+        }
+
+        return null;
+    }
+
+    private OutlineFeature GetOutlineFeature()
+    {
+        var urpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+        if (urpAsset == null)
+        {
+            Debug.LogWarning("No Universal Render Pipeline Asset found");
+            return null;
+        }
+
+        SerializedObject so = new SerializedObject(urpAsset);
+        SerializedProperty rendererDataListProp = so.FindProperty("m_RendererDataList");
+
+        if (rendererDataListProp == null || rendererDataListProp.arraySize == 0)
+        {
+            Debug.LogWarning("URP asset has no RendererData list");
+            return null;
+        }
+
+        int defaultRendererIndex = 0;
+        SerializedProperty defaultRendererProp = so.FindProperty("m_DefaultRendererIndex");
+        if (defaultRendererProp != null)
+        {
+            defaultRendererIndex = defaultRendererProp.intValue;
+        }
+
+        SerializedProperty rendererDataProp = rendererDataListProp.GetArrayElementAtIndex(defaultRendererIndex);
+        var rendererData = rendererDataProp.objectReferenceValue as ScriptableRendererData;
+        if (rendererData == null)
+        {
+            Debug.LogWarning("RendererData is null in URP asset.");
+            return null;
+        }
+
+        //Search for outline feature
+        foreach (var feature in rendererData.rendererFeatures)
+        {
+            if (feature is OutlineFeature outlineFeature)
+                return outlineFeature;
+        }
+
+        Debug.LogWarning("No OutlineFeature found in renderer features.");
+        return null;
+    }
 }

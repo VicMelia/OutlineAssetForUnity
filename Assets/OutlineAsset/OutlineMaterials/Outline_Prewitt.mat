@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PrewittMat
-  m_Shader: {fileID: -6465566751694194690, guid: 04ba8644aa8891e41b7c139fba903dc3, type: 3}
+  m_Name: Outline_Prewitt
+  m_Shader: {fileID: -6465566751694194690, guid: 52e1059f4af21e740b01f3a2b69776c3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -44,26 +44,28 @@ Material:
     - _AnimateNoise: 0
     - _ApplyLightColor: 0
     - _ApplyNoise: 0
-    - _BloomIntensity: 3
+    - _BloomIntensity: 1.8
     - _CustomTexture: 0
-    - _EdgeMin: 0
+    - _EdgeMin: 0.1
+    - _FilterSelector: 2
     - _IntermitentSpeed: 3
-    - _LightFactor: 0.5
-    - _NoiseScale: 10
+    - _LightFactor: 0.446
+    - _NoiseScale: 200
+    - _NormalNoise: 0
     - _NormalStrength: 1
-    - _NormalThickness: 1
-    - _NormalThreshold: 5
+    - _NormalThickness: 1.36
+    - _NormalThreshold: 0.1
     - _OutlineStrength: 1
-    - _OutlineThickness: 1
+    - _OutlineThickness: 2.26
     - _StepTime: 0.2
-    - _Threshold: 0.3
+    - _Threshold: 0.1
     - _UseBloom: 0
     - _UseIntermitent: 0
     - _UseNormal: 0
     m_Colors:
-    - _BloomColor: {r: 0, g: 0, b: 0, a: 1}
-    - _NoiseStrength: {r: 0, g: 0, b: 0, a: 0}
-    - _OutlineColor: {r: 0.7735849, g: 0.2225881, b: 0.2225881, a: 1}
-    - _TexSize: {r: 0, g: 0, b: 0, a: 0}
+    - _BloomColor: {r: 1, g: 0, b: 0, a: 1}
+    - _NoiseStrength: {r: 0.01, g: 0.01, b: 0, a: 0}
+    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _TexSize: {r: 3.2, g: 3.2, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

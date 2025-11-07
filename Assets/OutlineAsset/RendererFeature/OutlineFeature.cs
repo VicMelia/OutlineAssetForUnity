@@ -13,7 +13,7 @@ public class OutlineFeature : ScriptableRendererFeature
 
     public RenderPassEvent injectionPoint = RenderPassEvent.BeforeRenderingPostProcessing;
     public Material material;
-    public static Material SharedOutlineMaterial { get; private set; }
+    public static Material SharedOutlineMaterial { get; set; }
     public static OutlineFeatureSettings SharedSettings { get; private set; }
 
     /// <inheritdoc/>
@@ -24,17 +24,10 @@ public class OutlineFeature : ScriptableRendererFeature
         SharedSettings = settings;
 
         if (material != null)
+        {
             SharedOutlineMaterial = material;
-
-        // You can request URP color texture and depth buffer as inputs by uncommenting the line below,
-        // URP will ensure copies of these resources are available for sampling before executing the render pass.
-        // Only uncomment it if necessary, it will have a performance impact, especially on mobiles and other TBDR GPUs where it will break render passes.
-        //m_ScriptablePass.ConfigureInput(ScriptableRenderPassInput.Color | ScriptableRenderPassInput.Depth);
-
-        // You can request URP to render to an intermediate texture by uncommenting the line below.
-        // Use this option for passes that do not support rendering directly to the backbuffer.
-        // Only uncomment it if necessary, it will have a performance impact, especially on mobiles and other TBDR GPUs where it will break render passes.
-        //m_ScriptablePass.requiresIntermediateTexture = true;
+        }
+         
     }
 
     protected override void Dispose(bool disposing)
