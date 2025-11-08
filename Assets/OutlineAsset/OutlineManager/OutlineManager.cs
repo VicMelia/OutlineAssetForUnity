@@ -4,16 +4,22 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
+/// <summary>
+/// Manages the outline rendering for objects in the scene using the Universal Render Pipeline (URP).
+/// Provides functionality to customize outlines including filter types, outline thickness, colors,
+/// double outlines, lighting, noise/distortion effects, bloom effects, custom textures and layer masking.
+/// </summary>
 [ExecuteInEditMode]
 [RequireComponent(typeof(Camera))]
-public class UltimateOutlineManager : MonoBehaviour
+public class OutlineManager : MonoBehaviour
 {
+    #region Material Properties
     [Header("Shader & Material Settings")]
     public Material outlineMaterial;
 
     [Header("Filter Mode")]
     public OutlineFilter Filter = OutlineFilter.Sobel;
-    [Range(0f, 5f)] public float FilterSelector = 1;
+    [Range(0f, 5f)] public float FilterSelector = 1f;
 
     [Header("Outline Mode")]
     public OutlineMode Mode = OutlineMode.DepthOnly;
@@ -79,7 +85,9 @@ public class UltimateOutlineManager : MonoBehaviour
 
     [Header("Layer Mask")]
     public LayerMask excludedLayerMask = 0;
+    #endregion
 
+    #region Editor Enums
     public enum OutlineFilter
     {
         RobertsCross,
@@ -89,7 +97,6 @@ public class UltimateOutlineManager : MonoBehaviour
         Laplacian,
         [InspectorName("Difference of Gaussians (DoG)")]
         DoG
-
     }
     public enum OutlineMode
     {
@@ -101,13 +108,11 @@ public class UltimateOutlineManager : MonoBehaviour
         Simple,
         Double
     }
-
     public enum LightBlend
     {
         Off,
         On
     }
-
     public enum NoiseEffect
     {
         Off,
@@ -115,7 +120,6 @@ public class UltimateOutlineManager : MonoBehaviour
         Pencil,
         Custom
     }
-
     public enum NoiseFrequency
     {
         Low,
@@ -123,32 +127,29 @@ public class UltimateOutlineManager : MonoBehaviour
         High,
         Custom
     }
-
     public enum DistortionAxis
     {
         X,
         Y,
         BothDirections
     }
-
     public enum AnimateLines
     {
         Off,
         On
     }
-
     public enum BloomEffect
     {
         Off,
         Simple,
         Intermitent
     }
-
     public enum TextureEffect
     {
         Off,
         On
     }
+    #endregion
 
     private void OnEnable()
     {
@@ -158,7 +159,7 @@ public class UltimateOutlineManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("UltimateOutlineManager: No se encontró el material de OutlineFeature. Asegúrate de que la feature esté activa en el Renderer.");
+            Debug.LogWarning("OutlineManager: OutlineFeature material not found. Make sure the feature is enabled on the Renderer.");
         }
         Camera camera = GetComponent<Camera>();
         camera.nearClipPlane = 2f;
@@ -182,6 +183,14 @@ public class UltimateOutlineManager : MonoBehaviour
             }
         }
 
+        UpdateOutlineMaterial();
+    }
+
+    /// <summary>
+    /// Updates the properties of the outline material based on current settings.
+    /// </summary>
+    private void UpdateOutlineMaterial()
+    {
         //Filter
         outlineMaterial.SetFloat("_FilterSelector", (int)FilterSelector);
 
@@ -229,8 +238,7 @@ public class UltimateOutlineManager : MonoBehaviour
 
         //Custom Texture
         outlineMaterial.SetFloat("_CustomTexture", UseCustomTexture ? 1f : 0f);
-        if (CustomTex != null)
-            outlineMaterial.SetTexture("_CustomTex", CustomTex);
+        outlineMaterial.SetTexture("_CustomTex", CustomTex);
         outlineMaterial.SetVector("_TexSize", TexSize);
 
         //Global volume (Bloom)
@@ -244,6 +252,12 @@ public class UltimateOutlineManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Configures a global Bloom post-processing effect at runtime.
+    /// If no Volume exists in the scene, it creates a new global Volume with a Bloom override.
+    /// Sets up initial Bloom settings including threshold, intensity, scatter, tint, and high-quality filtering.
+    /// </summary>
+    /// 
     private void SetBloom()
     {
         _sceneVolume = FindAnyObjectByType<Volume>();
@@ -270,7 +284,7 @@ public class UltimateOutlineManager : MonoBehaviour
                 bloom.dirtTexture.overrideState = false;
                 bloom.dirtIntensity.overrideState = false;
 
-                //initial values
+                //Default bloom values
                 bloom.threshold.value = 2f;
                 bloom.intensity.value = 2f;
                 bloom.scatter.value = 0.5f;

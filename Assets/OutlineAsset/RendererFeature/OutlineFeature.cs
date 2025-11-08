@@ -8,15 +8,16 @@ using UnityEngine.Rendering.RendererUtils;
 
 public class OutlineFeature : ScriptableRendererFeature
 {
+    #region Feature variables
+    private OutlineFeaturePass m_ScriptablePass;
     [SerializeField] OutlineFeatureSettings settings;
-    OutlineFeaturePass m_ScriptablePass;
-
-    public RenderPassEvent injectionPoint = RenderPassEvent.BeforeRenderingPostProcessing;
-    public Material material;
     public static Material SharedOutlineMaterial { get; set; }
     public static OutlineFeatureSettings SharedSettings { get; private set; }
+    public RenderPassEvent injectionPoint = RenderPassEvent.BeforeRenderingPostProcessing;
+    public Material material;
+    #endregion
 
-    /// <inheritdoc/>
+    #region Feature Setup
     public override void Create()
     {
         m_ScriptablePass = new OutlineFeaturePass(settings);
@@ -27,7 +28,6 @@ public class OutlineFeature : ScriptableRendererFeature
         {
             SharedOutlineMaterial = material;
         }
-         
     }
 
     protected override void Dispose(bool disposing)
@@ -37,24 +37,23 @@ public class OutlineFeature : ScriptableRendererFeature
         SharedSettings = null;
     }
 
-    // Here you can inject one or multiple render passes in the renderer.
-    // This method is called when setting up the renderer once per-camera.
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
         if (material == null) return;
         m_ScriptablePass.Setup(material);
         renderer.EnqueuePass(m_ScriptablePass);
     }
+    #endregion
 
-    // Use this class to pass around settings from the feature to the pass
+    #region Feature Settings
     [Serializable]
     public class OutlineFeatureSettings
     {
-        [Tooltip("Layers excluded from outline effect")]
         public LayerMask excludedLayerMask = 0;
     }
+    #endregion
 
-    class OutlineFeaturePass : ScriptableRenderPass
+    private class OutlineFeaturePass : ScriptableRenderPass
     {
         private readonly OutlineFeatureSettings settings;
         private Material m_Material;
@@ -70,7 +69,6 @@ public class OutlineFeature : ScriptableRendererFeature
             requiresIntermediateTexture = true;
         }
 
-        //Mtodo oficial para Unity 6 con Render Graph
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
         {
             var resourceData = frameData.Get<UniversalResourceData>();
@@ -78,11 +76,8 @@ public class OutlineFeature : ScriptableRendererFeature
 
             var cameraData = frameData.Get<UniversalCameraData>();
             var renderingData = frameData.Get<UniversalRenderingData>();
-            //if (!cameraData.requiresDepthTexture) return;
-            //if (cameraData.renderType != CameraRenderType.Base) return;
 
-
-            //Depth excluder (FIRST PASS)
+            #region First Pass (Depth Prepass)
             var depth = resourceData.cameraDepthTexture;
             var descDepth = renderGraph.GetTextureDesc(depth);
             descDepth.name = "DepthOutput";
@@ -113,8 +108,9 @@ public class OutlineFeature : ScriptableRendererFeature
                     ctx.cmd.DrawRendererList(rendererList);
                 });
             }
+            #endregion
 
-            //Normal excluder (SECOND PASS)
+            #region Second Pass (Normal Prepass)
             var normals = resourceData.cameraNormalsTexture;
             var descNormals = renderGraph.GetTextureDesc(normals);
             descDepth.name = "DepthOutput";
@@ -145,8 +141,9 @@ public class OutlineFeature : ScriptableRendererFeature
                     ctx.cmd.DrawRendererList(rendererList);
                 });
             }
+            #endregion
 
-            //Outline pass (THIRD PASS)
+            #region Third Pass (Outline Pass)
             var desc = renderGraph.GetTextureDesc(colorSource);
             desc.name = "OutlineOutput";
             desc.clearBuffer = false;
@@ -190,11 +187,10 @@ public class OutlineFeature : ScriptableRendererFeature
                     ctx.cmd.DrawRendererList(rendererList);
                 });
             }
-
             resourceData.cameraColor = destination;
+            #endregion 
 
-
-            //Depth excluded layers rewritten inside Z-Buffer (FOURTH PASS)
+            #region Fourth Pass (Depth rewritten)
             var descFinalDepth = renderGraph.GetTextureDesc(outlineDepth);
             descFinalDepth.name = "DepthFinalOutput";
             TextureHandle outputDepth = renderGraph.CreateTexture(descFinalDepth);
@@ -224,10 +220,11 @@ public class OutlineFeature : ScriptableRendererFeature
                     ctx.cmd.DrawRendererList(rendererList);
                 });
             }
+            #endregion
 
         }
 
-        class DepthData
+        private class DepthData
         {
             public TextureHandle depth;
             public CullingResults cullingResults;
@@ -235,7 +232,7 @@ public class OutlineFeature : ScriptableRendererFeature
             public UniversalRenderingData renderingData;
         }
 
-        class NormalsData
+        private class NormalsData
         {
             public TextureHandle normals;
             public CullingResults cullingResults;
@@ -243,7 +240,7 @@ public class OutlineFeature : ScriptableRendererFeature
             public UniversalRenderingData renderingData;
         }
 
-        class PassData
+        private class PassData
         {
             public TextureHandle source;
             public TextureHandle destination;
