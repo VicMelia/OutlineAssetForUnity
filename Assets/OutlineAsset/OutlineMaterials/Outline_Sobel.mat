@@ -47,29 +47,29 @@ Material:
     - _BloomIntensity: 2
     - _CustomTexture: 0
     - _DoubleMode: 0
-    - _DoubleNormalThickness: 1.8
-    - _DoubleThickness: 7.29
-    - _EdgeMin: 0.1
+    - _DoubleNormalThickness: 2.32
+    - _DoubleThickness: 5.3199997
+    - _EdgeMin: 0.01
     - _FilterSelector: 1
     - _IntermitentSpeed: 3
-    - _LightFactor: 0.5
+    - _LightFactor: 1
     - _NoiseScale: 200
     - _NormalNoise: 0
     - _NormalStrength: 1
     - _NormalThickness: 0.1
-    - _NormalThreshold: 0.8
+    - _NormalThreshold: 2
     - _OutlineStrength: 1
-    - _OutlineThickness: 2
+    - _OutlineThickness: 0.21
     - _StepTime: 0.2
-    - _Threshold: 0.05
+    - _Threshold: 0
     - _UseBloom: 0
     - _UseIntermitent: 0
     - _UseNormal: 0
     m_Colors:
-    - _BloomColor: {r: 1, g: 0.6243848, b: 0.21226418, a: 1}
-    - _DoubleColor: {r: 0.38679248, g: 0.056559276, b: 0.056559276, a: 1}
-    - _NoiseStrength: {r: 0.01, g: 0.01, b: 0, a: 0}
+    - _BloomColor: {r: 0.9716981, g: 0, b: 0, a: 1}
+    - _DoubleColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NoiseStrength: {r: 0, g: 0.01, b: 0, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
-    - _TexSize: {r: 10, g: 10, b: 0, a: 0}
+    - _TexSize: {r: 20, g: 10, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
