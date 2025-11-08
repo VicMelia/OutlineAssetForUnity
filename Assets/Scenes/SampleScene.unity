@@ -178,7 +178,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 1
+  near clip plane: 3
   far clip plane: 1000
   field of view: 70
   orthographic: 0
@@ -273,9 +273,9 @@ MonoBehaviour:
   Filter: 1
   FilterSelector: 1
   Mode: 0
-  OutlineThickness: 6.11
+  OutlineThickness: 0.1
   OutlineStrength: 1
-  Threshold: 0.1
+  Threshold: 0.05
   OutlineColor: {r: 1, g: 1, b: 1, a: 1}
   EdgeMin: 0.1
   BlendMode: 0

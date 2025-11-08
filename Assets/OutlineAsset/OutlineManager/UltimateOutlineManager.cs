@@ -148,8 +148,8 @@ public class UltimateOutlineManager : MonoBehaviour
         {
             Debug.LogWarning("UltimateOutlineManager: No se encontró el material de OutlineFeature. Asegúrate de que la feature esté activa en el Renderer.");
         }
-        Camera camera = Camera.main;
-        camera.nearClipPlane = 3f;
+        Camera camera = GetComponent<Camera>();
+        camera.nearClipPlane = 2f;
         camera.farClipPlane = 1000f;
         SetBloom();
     }

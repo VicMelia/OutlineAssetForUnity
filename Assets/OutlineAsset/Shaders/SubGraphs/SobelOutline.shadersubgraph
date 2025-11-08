@@ -4899,7 +4899,7 @@
     "m_Title": "Vertical Gradient",
     "m_Position": {
         "x": -2948.0,
-        "y": -1318.0001220703125
+        "y": -1318.0
     }
 }
 
@@ -6854,8 +6854,8 @@
     "m_ObjectId": "2c7e9e07744e4cdaaefe6a1cfcac9bb3",
     "m_Title": "Combine and Coloring",
     "m_Position": {
-        "x": -394.0000305175781,
-        "y": -553.9999389648438
+        "x": -394.0,
+        "y": -554.0
     }
 }
 
@@ -8970,7 +8970,7 @@
     "m_Title": "Horizontal Gradient",
     "m_Position": {
         "x": -3012.0,
-        "y": -2571.000244140625
+        "y": -2571.0
     }
 }
 
@@ -10924,7 +10924,7 @@
     "m_ObjectId": "5d1e2cdcbb1e489683b8f6534f08cb5d",
     "m_Title": "Normal UVs",
     "m_Position": {
-        "x": -4015.000244140625,
+        "x": -4015.0,
         "y": -113.0
     }
 }
@@ -21755,8 +21755,8 @@
     "m_ObjectId": "e7e5a35dd5ac46ce83e3f4ef61ae934a",
     "m_Title": "Depth UVs",
     "m_Position": {
-        "x": -4015.000244140625,
-        "y": -972.0001220703125
+        "x": -4015.0,
+        "y": -972.0
     }
 }
 
