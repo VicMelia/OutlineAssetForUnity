@@ -178,7 +178,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 1
+  near clip plane: 2
   far clip plane: 1000
   field of view: 70
   orthographic: 0
@@ -273,34 +273,34 @@ MonoBehaviour:
   Filter: 1
   FilterSelector: 1
   Mode: 0
-  OutlineThickness: 0.1
+  OutlineThickness: 1.26
   OutlineStrength: 1
-  Threshold: 0.057
-  OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+  Threshold: 0.1
+  OutlineColor: {r: 1, g: 1, b: 1, a: 1}
   EdgeMin: 0.1
-  Style: 1
-  DoubleMode: 1
-  DoubleThickness: 4.36
-  DoubleNormalThickness: 3.92
+  Style: 0
+  DoubleMode: 0
+  DoubleThickness: 9
+  DoubleNormalThickness: 2.1
   DoubleColor: {r: 1, g: 1, b: 1, a: 1}
   BlendMode: 0
   ApplyLightColor: 0
-  LightFactor: 0.5
-  ApplyNoise: 1
-  AnimateNoise: 1
-  noiseEffect: 1
+  LightFactor: 0.486
+  ApplyNoise: 0
+  AnimateNoise: 0
+  noiseEffect: 0
   noiseFrequency: 0
   animateLines: 1
   StepTime: 0.2
   NoiseScale: 200
-  distortionAxis: 0
-  NoiseStrength: {x: 0.01, y: 0}
+  distortionAxis: 2
+  NoiseStrength: {x: 0.01, y: 0.01}
   UseNormal: 0
-  NormalThreshold: 1.18
+  NormalThreshold: 0.8
   NormalStrength: 1
-  NormalThickness: 0.75
+  NormalThickness: 0.1
   UseBloom: 0
-  BloomIntensity: 2
+  BloomIntensity: 1.12
   BloomColor: {r: 1, g: 0.6243848, b: 0.21226418, a: 1}
   bloomEffect: 0
   UseIntermitent: 0

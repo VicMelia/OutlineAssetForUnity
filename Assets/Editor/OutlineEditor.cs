@@ -125,7 +125,7 @@ public class OutlineEditor : Editor
         EditorGUILayout.LabelField("Depth Settings", EditorStyles.miniBoldLabel);
         manager.OutlineThickness = EditorGUILayout.Slider("Outline Thickness", manager.OutlineThickness, 0.1f, GetMaxThickness(manager.Filter));
         manager.OutlineStrength = EditorGUILayout.Slider("Outline Opacity", manager.OutlineStrength, 0f, 1f);
-        manager.Threshold = EditorGUILayout.Slider("Threshold", manager.Threshold, 0.05f, 1f);
+        manager.Threshold = EditorGUILayout.Slider("Outline Reduction", manager.Threshold, 0f, 1f);
         EditorGUI.indentLevel--;
         EditorGUILayout.EndVertical();
 
@@ -140,7 +140,7 @@ public class OutlineEditor : Editor
                 manager.UseNormal = true;
                 manager.NormalThickness = EditorGUILayout.Slider("Normal Thickness", manager.NormalThickness, 0.1f, manager.OutlineThickness);
                 manager.NormalStrength = EditorGUILayout.Slider("Normal Opacity", manager.NormalStrength, 0f, 1f);
-                manager.NormalThreshold = EditorGUILayout.Slider("Normal Threshold", manager.NormalThreshold, 0.1f, 15f);
+                manager.NormalThreshold = EditorGUILayout.Slider("Normal Reduction", manager.NormalThreshold, 0.1f, 15f);
 
                 EditorGUI.indentLevel--;
                 EditorGUILayout.EndVertical();
