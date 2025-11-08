@@ -75,12 +75,14 @@ public class OutlineFeature : ScriptableRendererFeature
         {
             var resourceData = frameData.Get<UniversalResourceData>();
             var colorSource = resourceData.activeColorTexture;
-            var normals = resourceData.cameraNormalsTexture;
 
             var cameraData = frameData.Get<UniversalCameraData>();
             var renderingData = frameData.Get<UniversalRenderingData>();
             //if (!cameraData.requiresDepthTexture) return;
             //if (cameraData.renderType != CameraRenderType.Base) return;
+
+
+            //Depth excluder (FIRST PASS)
             var depth = resourceData.cameraDepthTexture;
             var descDepth = renderGraph.GetTextureDesc(depth);
             descDepth.name = "DepthOutput";
@@ -112,6 +114,39 @@ public class OutlineFeature : ScriptableRendererFeature
                 });
             }
 
+            //Normal excluder (SECOND PASS)
+            var normals = resourceData.cameraNormalsTexture;
+            var descNormals = renderGraph.GetTextureDesc(normals);
+            descDepth.name = "DepthOutput";
+            TextureHandle outlineNormal = renderGraph.CreateTexture(descNormals);
+
+            using (var builder = renderGraph.AddRasterRenderPass<NormalsData>("Normal Pass", out var passData))
+            {
+                passData.normals = outlineNormal;
+                passData.cullingResults = frameData.Get<UniversalRenderingData>().cullResults;
+                passData.cameraData = cameraData;
+                passData.renderingData = renderingData;
+
+                var mask = ~settings.excludedLayerMask.value;
+
+                var rendererListDesc = new RendererListDesc(new ShaderTagId("DepthNormals"), passData.cullingResults, passData.cameraData.camera)
+                {
+                    sortingCriteria = SortingCriteria.CommonOpaque,
+                    rendererConfiguration = PerObjectData.None,
+                    renderQueueRange = RenderQueueRange.opaque,
+                    layerMask = mask
+                };
+
+                var rendererList = renderGraph.CreateRendererList(rendererListDesc);
+                builder.UseRendererList(rendererList);
+                builder.SetRenderAttachment(passData.normals, 0);
+                builder.SetRenderFunc((NormalsData data, RasterGraphContext ctx) =>
+                {
+                    ctx.cmd.DrawRendererList(rendererList);
+                });
+            }
+
+            //Outline pass (THIRD PASS)
             var desc = renderGraph.GetTextureDesc(colorSource);
             desc.name = "OutlineOutput";
             desc.clearBuffer = false;
@@ -124,7 +159,7 @@ public class OutlineFeature : ScriptableRendererFeature
                 passData.destination = destination;
                 passData.material = m_Material;
                 passData.depth = outlineDepth;
-                passData.normals = normals;
+                passData.normals = outlineNormal;
                 passData.cullingResults = frameData.Get<UniversalRenderingData>().cullResults;
                 passData.cameraData = cameraData;
 
@@ -158,6 +193,8 @@ public class OutlineFeature : ScriptableRendererFeature
 
             resourceData.cameraColor = destination;
 
+
+            //Depth excluded layers rewritten inside Z-Buffer (FOURTH PASS)
             var descFinalDepth = renderGraph.GetTextureDesc(outlineDepth);
             descFinalDepth.name = "DepthFinalOutput";
             TextureHandle outputDepth = renderGraph.CreateTexture(descFinalDepth);
@@ -193,6 +230,14 @@ public class OutlineFeature : ScriptableRendererFeature
         class DepthData
         {
             public TextureHandle depth;
+            public CullingResults cullingResults;
+            public UniversalCameraData cameraData;
+            public UniversalRenderingData renderingData;
+        }
+
+        class NormalsData
+        {
+            public TextureHandle normals;
             public CullingResults cullingResults;
             public UniversalCameraData cameraData;
             public UniversalRenderingData renderingData;

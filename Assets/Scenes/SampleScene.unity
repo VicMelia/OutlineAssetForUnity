@@ -272,7 +272,7 @@ MonoBehaviour:
   outlineMaterial: {fileID: 2100000, guid: dd48d23dc5675cb4d8a62967b7c573c0, type: 2}
   Filter: 1
   FilterSelector: 1
-  Mode: 0
+  Mode: 1
   OutlineThickness: 1.26
   OutlineStrength: 1
   Threshold: 0.1
@@ -295,7 +295,7 @@ MonoBehaviour:
   NoiseScale: 200
   distortionAxis: 2
   NoiseStrength: {x: 0.01, y: 0.01}
-  UseNormal: 0
+  UseNormal: 1
   NormalThreshold: 0.8
   NormalStrength: 1
   NormalThickness: 0.1
@@ -312,7 +312,7 @@ MonoBehaviour:
   TexSize: {x: 10, y: 10}
   excludedLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

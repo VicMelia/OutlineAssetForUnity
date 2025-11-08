@@ -64,7 +64,7 @@ Material:
     - _Threshold: 0.1
     - _UseBloom: 0
     - _UseIntermitent: 0
-    - _UseNormal: 0
+    - _UseNormal: 1
     m_Colors:
     - _BloomColor: {r: 1, g: 0.6243848, b: 0.21226418, a: 1}
     - _DoubleColor: {r: 1, g: 1, b: 1, a: 1}
