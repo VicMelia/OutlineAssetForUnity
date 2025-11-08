@@ -129,6 +129,7 @@ public class OutlineEditor : Editor
         EditorGUI.indentLevel--;
         EditorGUILayout.EndVertical();
 
+        //OUTLINE DEPTH-NORMAL SETTINGS
         switch (manager.Mode)
         {
             case OutlineMode.DepthAndNormals:
@@ -152,6 +153,34 @@ public class OutlineEditor : Editor
 
         EditorGUILayout.Space();
 
+        manager.Style = (OutlineStyle)EditorGUILayout.EnumPopup("Outline Style", manager.Style);
+
+        //OUTLINE SIMPLE-DOUBLE SETTINGS
+        switch (manager.Style)
+        {
+            case OutlineStyle.Double:
+
+                EditorGUILayout.Space();
+                GUILayout.BeginVertical(GetBoxStyle(new Color(0.1f, 0.1f, 0.1f, 0.3f)));
+                EditorGUI.indentLevel++;
+                EditorGUILayout.LabelField("Outer Outline Settings", EditorStyles.miniBoldLabel);
+                manager.DoubleMode = true;
+                manager.DoubleColor = EditorGUILayout.ColorField("Outer Color", manager.DoubleColor);
+                manager.DoubleThickness = EditorGUILayout.Slider("Outer Thickness", manager.DoubleThickness, manager.OutlineThickness + 2f, GetMaxThickness(manager.Filter) + 4f);
+
+                if(manager.Mode == OutlineMode.DepthAndNormals)
+                {
+                    manager.DoubleNormalThickness = EditorGUILayout.Slider("Outer Normal Thickness", manager.DoubleNormalThickness, manager.NormalThickness + 0.1f, manager.DoubleThickness);
+                }
+
+                EditorGUI.indentLevel--;
+                EditorGUILayout.EndVertical();
+                break;
+
+            default:
+                if (manager.DoubleMode) manager.DoubleMode = false;
+                break;
+        }
     }
 
     private void SetLightSettings(Object target, UltimateOutlineManager manager)

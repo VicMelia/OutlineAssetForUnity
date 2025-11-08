@@ -19,11 +19,18 @@ public class UltimateOutlineManager : MonoBehaviour
     public OutlineMode Mode = OutlineMode.DepthOnly;
 
     [Header("Outline Settings")]
-    [Range(0.1f, 10)] public float OutlineThickness = 1f;
+    [Range(0.1f, 10f)] public float OutlineThickness = 1f;
     [Range(0, 1)] public float OutlineStrength = 1f;
     [Range(0, 2)] public float Threshold = 0.05f;
     [ColorUsage(true, true)] public Color OutlineColor = Color.white;
     public float EdgeMin = 0.01f;
+
+    [Header("Double Outline Settings")]
+    public OutlineStyle Style = OutlineStyle.Simple;
+    public bool DoubleMode = true;
+    [Range(0.1f, 10f)] public float DoubleThickness = 1f;
+    [Range(0.1f, 10f)] public float DoubleNormalThickness = 2f;
+    [ColorUsage(true, true)] public Color DoubleColor = Color.white;
 
     [Header("Light Blend")]
     public LightBlend BlendMode = LightBlend.Off;
@@ -88,6 +95,11 @@ public class UltimateOutlineManager : MonoBehaviour
     {
         DepthOnly,
         DepthAndNormals
+    }
+    public enum OutlineStyle
+    {
+        Simple,
+        Double
     }
 
     public enum LightBlend
@@ -179,6 +191,12 @@ public class UltimateOutlineManager : MonoBehaviour
         outlineMaterial.SetFloat("_Threshold", Threshold);
         outlineMaterial.SetColor("_OutlineColor", OutlineColor);
         outlineMaterial.SetFloat("_EdgeMin", EdgeMin);
+
+        //Double Outline
+        outlineMaterial.SetFloat("_DoubleMode", DoubleMode ? 1f : 0f);
+        outlineMaterial.SetFloat("_DoubleThickness", DoubleThickness);
+        outlineMaterial.SetFloat("_DoubleNormalThickness", DoubleNormalThickness);
+        outlineMaterial.SetColor("_DoubleColor", DoubleColor);
 
         //Noise
         outlineMaterial.SetFloat("_ApplyNoise", ApplyNoise ? 1f : 0f);
