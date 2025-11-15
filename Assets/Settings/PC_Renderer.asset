@@ -18,7 +18,7 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 0
   injectionPoint: 550
-  material: {fileID: 2100000, guid: dd48d23dc5675cb4d8a62967b7c573c0, type: 2}
+  material: {fileID: 2100000, guid: ac7172f589002b0479c37e3dff00aef7, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

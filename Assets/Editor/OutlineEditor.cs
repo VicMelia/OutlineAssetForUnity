@@ -168,12 +168,17 @@ public class OutlineEditor : Editor
                 manager.NormalThickness = EditorGUILayout.Slider("Normal Thickness", manager.NormalThickness, 0.1f, manager.OutlineThickness);
                 manager.NormalStrength = EditorGUILayout.Slider("Normal Opacity", manager.NormalStrength, 0f, 1f);
                 manager.NormalThreshold = EditorGUILayout.Slider("Normal Reduction", manager.NormalThreshold, 0.1f, 15f);
+                manager.outlineMaterial.EnableKeyword("USE_NORMAL");
                 EditorGUI.indentLevel--;
                 EditorGUILayout.EndVertical();
                 break;
 
             default:
-                if (manager.UseNormal) manager.UseNormal = false;
+                if (manager.UseNormal) {
+                    manager.UseNormal = false;
+                    manager.outlineMaterial.DisableKeyword("USE_NORMAL");
+
+                } 
                 break;
         }
         EditorGUILayout.Space();
@@ -188,6 +193,7 @@ public class OutlineEditor : Editor
                 EditorGUI.indentLevel++;
                 EditorGUILayout.LabelField("Outer Outline Settings", EditorStyles.miniBoldLabel);
                 manager.DoubleMode = true;
+                manager.outlineMaterial.EnableKeyword("USE_DOUBLE");
                 manager.DoubleColor = EditorGUILayout.ColorField("Outer Color", manager.DoubleColor);
                 manager.DoubleThickness = EditorGUILayout.Slider("Outer Thickness", manager.DoubleThickness, manager.OutlineThickness + 2f, OutlineEditorHelpers.GetMaxThickness(manager.Filter) + 4f);
 
@@ -200,7 +206,12 @@ public class OutlineEditor : Editor
                 break;
 
             default:
-                if (manager.DoubleMode) manager.DoubleMode = false;
+                if (manager.DoubleMode) {
+                    manager.DoubleMode = false;
+                    manager.outlineMaterial.DisableKeyword("USE_DOUBLE");
+
+                } 
+                
                 break;
         }
     }

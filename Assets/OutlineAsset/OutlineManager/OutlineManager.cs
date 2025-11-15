@@ -151,6 +151,10 @@ public class OutlineManager : MonoBehaviour
     }
     #endregion
 
+    private static GlobalKeyword useNormalKeyword;
+
+    private static GlobalKeyword useDoubleKeyword;
+
     private void OnEnable()
     {
         if (OutlineFeature.SharedOutlineMaterial != null)
@@ -183,6 +187,17 @@ public class OutlineManager : MonoBehaviour
             }
         }
 
+        if (useNormalKeyword.IsUnityNull())
+        {
+            useNormalKeyword = GlobalKeyword.Create("_USE_NORMAL");
+        }
+
+        if (useDoubleKeyword.IsUnityNull())
+        {
+            useDoubleKeyword = GlobalKeyword.Create("_USE_DOUBLE");
+        }
+
+
         UpdateOutlineMaterial();
     }
 
@@ -206,6 +221,14 @@ public class OutlineManager : MonoBehaviour
         outlineMaterial.SetFloat("_DoubleThickness", DoubleThickness);
         outlineMaterial.SetFloat("_DoubleNormalThickness", DoubleNormalThickness);
         outlineMaterial.SetColor("_DoubleColor", DoubleColor);
+        if (DoubleMode)
+        {
+            outlineMaterial.EnableKeyword("_USE_DOUBLE");  // activa la variante
+        }
+        else
+        {
+            outlineMaterial.DisableKeyword("_USE_DOUBLE"); // desactiva la variante
+        }
 
         //Noise
         outlineMaterial.SetFloat("_ApplyNoise", ApplyNoise ? 1f : 0f);
@@ -222,6 +245,14 @@ public class OutlineManager : MonoBehaviour
         outlineMaterial.SetFloat("_UseNormal", UseNormal ? 1f : 0f);
         outlineMaterial.SetFloat("_NormalThreshold", NormalThreshold);
         outlineMaterial.SetFloat("_NormalStrength", NormalStrength);
+        if (UseNormal)
+        {
+            outlineMaterial.EnableKeyword("_USE_NORMAL");  // activa la variante
+        }
+        else
+        {
+            outlineMaterial.DisableKeyword("_USE_NORMAL"); // desactiva la variante
+        }
 
         //Bloom
         outlineMaterial.SetFloat("_UseBloom", UseBloom ? 1f : 0f);
