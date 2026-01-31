@@ -1,0 +1,31 @@
+{
+    "name": "com.viktor_mjs.handy-outlines-customizable-highlight-effects",
+    "version": "1.0.0",
+    "displayName": "Handy Outlines - Customizable Highlight Effects",
+    "description": "A Unity package that provides customizable outline and highlight effects for game objects, enhancing visual feedback and interactivity in your projects.",
+    "unity": "6000.0",
+    "unityRelease": "60f1",
+    "documentationUrl": "",
+    "changelogUrl": "",
+    "licensesUrl": "",
+    "keywords": [
+      "outline",
+      "highlight",
+      "effects",
+      "3D",
+      "customizable",
+      "performant"
+    ],
+    "samples": [
+      {
+          "displayName": "Textures",
+          "description": "Contains sample textures to be used with the outline effects.",
+          "path": "Samples/Textures"
+      }
+    ],
+    "author": {
+      "name": "viktor_mjs",
+      "email": "vikoradevv@gmail.com",
+      "url": "https://vicmelia.github.io"
+    }
+  }

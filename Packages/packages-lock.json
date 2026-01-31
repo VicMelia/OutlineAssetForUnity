@@ -204,6 +204,12 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.viktor_mjs.handy-outlines-customizable-highlight-effects": {
+      "version": "file:com.viktor_mjs.handy-outlines-customizable-highlight-effects",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

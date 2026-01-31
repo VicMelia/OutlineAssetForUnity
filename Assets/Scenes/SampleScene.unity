@@ -272,30 +272,30 @@ MonoBehaviour:
   outlineMaterial: {fileID: 2100000, guid: dd48d23dc5675cb4d8a62967b7c573c0, type: 2}
   Filter: 1
   FilterSelector: 1
-  Mode: 0
-  OutlineThickness: 2
+  Mode: 1
+  OutlineThickness: 0.1
   OutlineStrength: 1
-  Threshold: 0.05
+  Threshold: 0.086
   OutlineColor: {r: 1, g: 1, b: 1, a: 1}
   EdgeMin: 0.1
-  Style: 0
-  DoubleMode: 0
-  DoubleThickness: 7.29
-  DoubleNormalThickness: 1.8
+  Style: 1
+  DoubleMode: 1
+  DoubleThickness: 2.1
+  DoubleNormalThickness: 2.1
   DoubleColor: {r: 0.38679248, g: 0.056559276, b: 0.056559276, a: 1}
-  BlendMode: 0
-  ApplyLightColor: 0
+  BlendMode: 1
+  ApplyLightColor: 1
   LightFactor: 0.5
-  ApplyNoise: 0
+  ApplyNoise: 1
   AnimateNoise: 0
-  noiseEffect: 0
-  noiseFrequency: 0
+  noiseEffect: 1
+  noiseFrequency: 3
   animateLines: 0
   StepTime: 0.2
   NoiseScale: 200
   distortionAxis: 2
   NoiseStrength: {x: 0.01, y: 0.01}
-  UseNormal: 0
+  UseNormal: 1
   NormalThreshold: 0.8
   NormalStrength: 1
   NormalThickness: 0.1

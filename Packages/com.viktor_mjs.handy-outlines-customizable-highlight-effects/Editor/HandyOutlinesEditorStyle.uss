@@ -1,0 +1,42 @@
+.filter-bg { background-color: #3e4b5e; }
+.outline-bg { background-color: #3e575e; }
+.light-bg { background-color: #5e5e3e; }
+.noise-bg { background-color: #5e3e3e; }
+.bloom-bg { background-color: #583e5e; }
+.texture-bg { background-color: #3e5e4f; }
+.layer-bg { background-color: #5e4e3e; }
+
+.section-foldout .unity-foldout__toggle {
+    padding: 4px;
+    margin: 0;
+    -unity-font-style: bold;
+    background-color: transparent;
+}
+
+.section-foldout .unity-foldout__content {
+    margin-left: 0; 
+    padding: 5px 10px 10px 15px;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.section-foldout {
+    margin-bottom: 2px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.unity-base-field__label {
+    min-width: 120px;
+    flex-basis: 0;
+    flex-grow: 1;
+}
+
+.inner-box {
+    padding-left: 20px;
+    margin-top: 5px;
+    background-color: rgba(0, 0, 0, 0.18);
+    border-radius: 4px;
+    padding: 5px;
+}
