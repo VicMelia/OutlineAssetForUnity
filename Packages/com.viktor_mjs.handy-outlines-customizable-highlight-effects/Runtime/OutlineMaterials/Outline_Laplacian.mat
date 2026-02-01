@@ -44,11 +44,11 @@ Material:
     - _AnimateNoise: 0
     - _ApplyLightColor: 0
     - _ApplyNoise: 0
-    - _BloomIntensity: 2
+    - _BloomIntensity: 1
     - _CustomTexture: 0
     - _DoubleMode: 0
-    - _DoubleNormalThickness: 2.32
-    - _DoubleThickness: 5.3199997
+    - _DoubleNormalThickness: 2
+    - _DoubleThickness: 1
     - _EdgeMin: 0.01
     - _FilterSelector: 4
     - _IntermitentSpeed: 3
@@ -56,20 +56,20 @@ Material:
     - _NoiseScale: 0.3
     - _NormalNoise: 0
     - _NormalStrength: 0.7
-    - _NormalThickness: 0.1
-    - _NormalThreshold: 3.3
+    - _NormalThickness: 2.45
+    - _NormalThreshold: 1
     - _OutlineStrength: 1
-    - _OutlineThickness: 0.1
+    - _OutlineThickness: 8
     - _StepTime: 0.2
-    - _Threshold: 0
+    - _Threshold: 0.5
     - _UseBloom: 0
     - _UseIntermitent: 0
     - _UseNormal: 0
     m_Colors:
     - _BloomColor: {r: 1, g: 1, b: 1, a: 1}
-    - _DoubleColor: {r: 0, g: 0, b: 0, a: 1}
-    - _NoiseStrength: {r: 0.01, g: 0.01, b: 0, a: 0}
-    - _OutlineColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+    - _DoubleColor: {r: 1, g: 1, b: 1, a: 1}
+    - _NoiseStrength: {r: 0.1, g: 0.1, b: 0, a: 0}
+    - _OutlineColor: {r: 1, g: 0, b: 0, a: 1}
     - _TexSize: {r: 20, g: 10, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

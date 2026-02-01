@@ -1,82 +1,19 @@
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace HandyOutlines
 {
 	public class HandyOutlinesEditor : EditorWindow
 	{
-		#region Editor Enums
-		public enum OutlineFilter
-		{
-			RobertsCross,
-			Sobel,
-			Prewitt,
-			Scharr,
-			Laplacian,
-			[InspectorName("Difference of Gaussians (DoG)")]
-			DoG
-		}
-		public enum OutlineMode
-		{
-			DepthOnly,
-			DepthAndNormals
-		}
-		public enum OutlineStyle
-		{
-			Simple,
-			Double
-		}
-		public enum LightBlend
-		{
-			Off,
-			On
-		}
-		public enum NoiseEffect
-		{
-			Off,
-			Waves,
-			Pencil,
-			Custom
-		}
-		public enum NoiseFrequency
-		{
-			Low,
-			Mid,
-			High,
-			Custom
-		}
-		public enum DistortionAxis
-		{
-			X,
-			Y,
-			BothDirections
-		}
-		public enum AnimateLines
-		{
-			Off,
-			On
-		}
-		public enum BloomEffect
-		{
-			Off,
-			Simple,
-			Intermitent
-		}
-		public enum TextureEffect
-		{
-			Off,
-			On
-		}
-		#endregion
-
 		#region Editor Elements
 		[SerializeField] private VisualTreeAsset _uxml;
 		private VisualElement _root, _setupScreen;
 		private Button _setupButton;
-		private ScrollView _mainScrollView;
+		private ScrollView _settingsScreen;
 		private EnumField _outlineFilterField, _outlineModeField;
 		private ColorField _outlineColorField;
 		private VisualElement _depthSettingsElement;
@@ -108,47 +45,15 @@ namespace HandyOutlines
 		private Slider _bloomIntensityField, _bloomIntermitentSpeedField;
 		private EnumField _customTextureEffectField;
 		private ObjectField _customTextureField;
+		private VisualElement _textureSizeElement;
+		private Slider _textureSizeXField, _textureSizeYField;
 		private LayerMaskField _layerMaskField;
 		#endregion
 
-		#region Editor variables
-		private Material _outlineMaterial;
-		private OutlineFilter _outlineFilter = OutlineFilter.Sobel;
-		private float _filterSelector = 1f;
-		private OutlineMode _outlineMode = OutlineMode.DepthOnly;
-		private float _outlineThickness = 1f, _outlineStrength = 1f, _outlineThreshold = 0.5f;
-		private Color _outlineColor = Color.white;
-		private float _edgeMin = 0.01f;
-		private OutlineStyle _outlineStyle = OutlineStyle.Simple;
-		private bool doubleMode = true;
-		private float _doubleThickness = 1f, _doubleNormalThickness = 2f;
-		private Color _doubleColor = Color.white;
-		private LightBlend _blendMode = LightBlend.Off;
-		private bool applyLightColor = false;
-		private float _lightFactor = 1f;
-		private bool _applyNoise = false, _animateNoise = false;
-		private NoiseEffect _noiseEffect = NoiseEffect.Off;
-		private NoiseFrequency _noiseFrequency = NoiseFrequency.Low;
-		private AnimateLines _animateLines = AnimateLines.Off;
-		private float _stepTime = 0.2f, _noiseScale = 0.3f;
-		private DistortionAxis _distortionAxis = DistortionAxis.BothDirections;
-		private Vector2 _noiseStrength = new Vector2(0.1f, 0.1f);
-		private bool _useNormal = true;
-		private float _normalThreshold = 1f, _normalStrength = 0.7f, _normalThickness = 2f;
-		private bool _useBloom = false;
-		private float _bloomIntensity = 1f;
-		private Color _bloomColor = Color.white;
-		private BloomEffect _bloomEffect = BloomEffect.Off;
-		private bool _useIntermitent = false;
-		private float _bloomIntermitentSpeed = 3f;
-		private bool _CameraOrtographic = false;
-		private TextureEffect _textureEffect = TextureEffect.Off;
-		private bool _useCustomTexture = false;
-		private Texture2D _customTex;
-		private Vector2 _texSize = new Vector2(20f, 10f);
-		private Volume _sceneVolume;
-		private LayerMask _excludeLayerMask = 0;
-		#endregion
+		private HandyOutlinesSettings _settings;
+		private SerializedObject _serializedSettings;
+		private const string SETTINGS_PATH = "Packages/com.viktor_mjs.handy-outlines-customizable-highlight-effects/Runtime/HandyOutlinesSettings.asset";
+		private const string MATERIALS_PATH = "Packages/com.viktor_mjs.handy-outlines-customizable-highlight-effects/Runtime/OutlineMaterials";
 
 		[MenuItem("Tools/Handy Outlines")]
 		public static void ShowWindow()
@@ -159,11 +64,35 @@ namespace HandyOutlines
 
         private void CreateGUI()
         {
+			//Read or create settings asset
+			_settings = LoadSettings();
+			_serializedSettings = new SerializedObject(_settings);
+
+			//Load UXML
             _root = rootVisualElement;
 			_uxml.CloneTree(_root);
+
+			//Bind serialized settings to UI
+			_root.Bind(_serializedSettings);
+
 			AssignUIElements();
+			RegisterCallbacks();
 			CheckSetup();
         }
+
+		/// <summary>
+		/// Loads the settings scriptable object or creates one if it doesn't exist.
+		/// </summary>
+		/// <returns></returns> The loaded or newly created settings scriptable object.
+		private HandyOutlinesSettings LoadSettings()
+		{
+			_settings = AssetDatabase.LoadAssetAtPath<HandyOutlinesSettings>(SETTINGS_PATH);
+			if (_settings != null) return _settings;
+			_settings = ScriptableObject.CreateInstance<HandyOutlinesSettings>();
+			AssetDatabase.CreateAsset(_settings, SETTINGS_PATH);
+			AssetDatabase.SaveAssets();
+			return _settings;
+		}
 
 		/// <summary>
 		/// Assigns all UI elements from the UXML to their respective variables.
@@ -172,7 +101,7 @@ namespace HandyOutlines
 		{
 			_setupScreen = _root.Q<VisualElement>("Setup_Screen");
 			_setupButton = _root.Q<Button>("Setup_Button");
-			_mainScrollView = _root.Q<ScrollView>("Main_ScrollView");
+			_settingsScreen = _root.Q<ScrollView>("Settings_Screen");
 			_outlineFilterField = _root.Q<EnumField>("Outline_Filter_Field");
 			_outlineModeField = _root.Q<EnumField>("Outline_Mode_Field");
 			_outlineColorField = _root.Q<ColorField>("Outline_Color_Field");
@@ -180,7 +109,7 @@ namespace HandyOutlines
 			_depthThicknessField = _root.Q<Slider>("Depth_Thickness_Field");
 			_depthOpacityField = _root.Q<Slider>("Depth_Opacity_Field");
 			_depthReductionField = _root.Q<Slider>("Depth_Reduction_Field");
-			_normalsSettingsElement = _root.Q<VisualElement>("Normals_Settings_Element");
+			_normalsSettingsElement = _root.Q<VisualElement>("Normal_Settings_Element");
 			_normalThicknessField = _root.Q<Slider>("Normal_Thickness_Field");
 			_normalOpacityField = _root.Q<Slider>("Normal_Opacity_Field");
 			_normalReductionField = _root.Q<Slider>("Normal_Reduction_Field");
@@ -192,8 +121,8 @@ namespace HandyOutlines
 			_lightBlendingField = _root.Q<EnumField>("Light_Blending_Field");
 			_lightBlendingFactorField = _root.Q<Slider>("Light_Blending_Factor_Field");
 			_distortionModeField = _root.Q<EnumField>("Distortion_Mode_Field");
-			_wavesSettingsElement = _root.Q<VisualElement>("Waves_Settings_Element");
-			_wavesFrequencyField = _root.Q<EnumField>("Waves_Frequency_Field");
+			_wavesSettingsElement = _root.Q<VisualElement>("Wave_Settings_Element");
+			_wavesFrequencyField = _root.Q<EnumField>("Wave_Frequency_Field");
 			_waveCustomFrequencyField = _root.Q<Slider>("Wave_Custom_Frequency_Field");
 			_waveDirectionField = _root.Q<EnumField>("Wave_Direction_Field");
 			_waveIntensityXField = _root.Q<Slider>("Wave_Intensity_X_Field");
@@ -207,7 +136,7 @@ namespace HandyOutlines
 			_customIntensityXField = _root.Q<Slider>("Custom_Intensity_X_Field");
 			_customIntensityYField = _root.Q<Slider>("Custom_Intensity_Y_Field");
 			_customScaleField = _root.Q<Slider>("Custom_Scale_Field");
-			_animateLinesField = _root.Q<EnumField>("Animate_Lines_Field");
+			_animateLinesField = _root.Q<EnumField>("Animate_Distortion_Field");
 			_animationSpeedField = _root.Q<Slider>("Animation_Speed_Field");
 			_bloomEffectField = _root.Q<EnumField>("Bloom_Effect_Field");
 			_bloomColorField = _root.Q<ColorField>("Bloom_Color_Field");
@@ -215,12 +144,237 @@ namespace HandyOutlines
 			_bloomIntermitentSpeedField = _root.Q<Slider>("Bloom_Intermitent_Speed_Field");
 			_customTextureEffectField = _root.Q<EnumField>("Custom_Texture_Effect_Field");
 			_customTextureField = _root.Q<ObjectField>("Custom_Texture_Field");
+			_textureSizeElement = _root.Q<VisualElement>("Texture_Size_Element");
+			_textureSizeXField = _root.Q<Slider>("Texture_Size_X_Field");
+			_textureSizeYField = _root.Q<Slider>("Texture_Size_Y_Field");
 			_layerMaskField = _root.Q<LayerMaskField>("Layer_Mask_Field");
 		}
 
-		private void CheckSetup()
+		private void RegisterCallbacks()
 		{
-			//TODO
+			_setupButton.clicked += OnSetupButtonClicked;
+			SerializedProperty filterProp = _serializedSettings.FindProperty("_outlineFilter");
+			_root.TrackPropertyValue(filterProp, newFilter => OnFilterChanged(newFilter));
+			SerializedProperty modeProp = _serializedSettings.FindProperty("_outlineMode");
+			_root.TrackPropertyValue(modeProp, newMode => OnModeChanged(newMode));
+			SerializedProperty styleProp = _serializedSettings.FindProperty("_outlineStyle");
+			_root.TrackPropertyValue(styleProp, newStyle => OnStyleChanged(newStyle));
+			SerializedProperty blendingProp = _serializedSettings.FindProperty("_blendMode");
+			_root.TrackPropertyValue(blendingProp, newBlending => OnBlendingChanged(newBlending));
+			SerializedProperty distortionProp = _serializedSettings.FindProperty("_noiseEffect");
+			_root.TrackPropertyValue(distortionProp, newDistortion => OnDistortionChanged(newDistortion));
+			SerializedProperty frequencyProp = _serializedSettings.FindProperty("_noiseFrequency");
+			_root.TrackPropertyValue(frequencyProp, newFrequency => OnFrequencyChanged(newFrequency));
+			
+
+			_root.TrackSerializedObjectValue(_serializedSettings, so => { _settings.UpdateOutlineMaterial(); });
 		}
+
+		/// <summary>
+		/// Checks if the outline system is set up in the current project and toggles between setup and settings screens accordingly.
+		/// </summary>
+		private void CheckSetup() //TODO: Implement actual setup check
+		{
+			if(true) // Replace this with actual setup check
+			{
+				_setupScreen.style.display = DisplayStyle.None;
+				_settingsScreen.style.display = DisplayStyle.Flex;
+			}
+			else
+			{
+				_setupScreen.style.display = DisplayStyle.Flex;
+				_settingsScreen.style.display = DisplayStyle.None;
+			}
+		}
+
+		#region Callbacks
+		private void OnSetupButtonClicked()
+		{
+			_setupScreen.style.display = DisplayStyle.None;
+			_settingsScreen.style.display = DisplayStyle.Flex;
+			//TODO: Implement actual setup process
+		}
+
+		private void OnFilterChanged(SerializedProperty newFilter)
+		{
+			Debug.Log("Outline filter changed");
+			int newValue = newFilter.enumValueIndex;
+			Material newMat = GetOutlineMaterial((HandyOutlinesSettings.OutlineFilter)newValue);
+			if (newMat != null)
+			{
+				OutlineFeature.SharedOutlineMaterial = newMat;
+				OutlineFeature outlineFeature = GetOutlineFeature(); 
+				if (outlineFeature != null)
+				{
+					outlineFeature.material = newMat;
+					EditorUtility.SetDirty(outlineFeature);
+					AssetDatabase.SaveAssets();
+				}
+
+				_settings.UpdateOutlineMaterial(newMat);
+			}
+			else
+			{
+				Debug.LogWarning($"Material for filter {(HandyOutlinesSettings.OutlineFilter)newValue} not found in {MATERIALS_PATH}");
+			}
+		}
+
+		private void OnModeChanged(SerializedProperty newMode)
+		{
+			int newValue = newMode.enumValueIndex;
+			switch ((HandyOutlinesSettings.OutlineMode)newValue)
+			{
+				case HandyOutlinesSettings.OutlineMode.DepthOnly:
+					_depthSettingsElement.style.display = DisplayStyle.Flex;
+					_normalsSettingsElement.style.display = DisplayStyle.None;
+					break;
+				case HandyOutlinesSettings.OutlineMode.DepthAndNormals:
+					_depthSettingsElement.style.display = DisplayStyle.Flex;
+					_normalsSettingsElement.style.display = DisplayStyle.Flex;
+					break;
+			}
+		}
+
+		private void OnStyleChanged(SerializedProperty newStyle)
+		{
+			int newValue = newStyle.enumValueIndex;
+			switch ((HandyOutlinesSettings.OutlineStyle)newValue)
+			{
+				case HandyOutlinesSettings.OutlineStyle.Simple:
+					_outerOutlineSettingsElement.style.display = DisplayStyle.None;
+					break;
+				case HandyOutlinesSettings.OutlineStyle.Double:
+					_outerOutlineSettingsElement.style.display = DisplayStyle.Flex;
+					break;
+			}
+		}
+
+		private void OnBlendingChanged(SerializedProperty newBlending)
+		{
+			int newValue = newBlending.enumValueIndex;
+			switch ((HandyOutlinesSettings.LightBlend)newValue)
+			{
+				case HandyOutlinesSettings.LightBlend.Off:
+					_lightBlendingFactorField.style.display = DisplayStyle.None;
+					break;
+				case HandyOutlinesSettings.LightBlend.On:
+					_lightBlendingFactorField.style.display = DisplayStyle.Flex;
+					break;
+			}
+		}
+
+		private void OnDistortionChanged(SerializedProperty newDistortion)
+		{
+			int newValue = newDistortion.enumValueIndex;
+			switch ((HandyOutlinesSettings.NoiseEffect)newValue)
+			{
+				case HandyOutlinesSettings.NoiseEffect.Off:
+					_wavesSettingsElement.style.display = DisplayStyle.None;
+					_pencilSettingsElement.style.display = DisplayStyle.None;
+					_customSettingsElement.style.display = DisplayStyle.None;
+					_animateLinesField.style.display = DisplayStyle.None;
+					break;
+				case HandyOutlinesSettings.NoiseEffect.Waves:
+					_wavesSettingsElement.style.display = DisplayStyle.Flex;
+					_pencilSettingsElement.style.display = DisplayStyle.None;
+					_customSettingsElement.style.display = DisplayStyle.None;
+					_animateLinesField.style.display = DisplayStyle.Flex;
+					break;
+				case HandyOutlinesSettings.NoiseEffect.Pencil:
+					_wavesSettingsElement.style.display = DisplayStyle.None;
+					_pencilSettingsElement.style.display = DisplayStyle.Flex;
+					_customSettingsElement.style.display = DisplayStyle.None;
+					_animateLinesField.style.display = DisplayStyle.Flex;
+					break;
+				case HandyOutlinesSettings.NoiseEffect.Custom:
+					_wavesSettingsElement.style.display = DisplayStyle.None;
+					_pencilSettingsElement.style.display = DisplayStyle.None;
+					_customSettingsElement.style.display = DisplayStyle.Flex;
+					_animateLinesField.style.display = DisplayStyle.Flex;
+					break;
+			}
+		}
+
+		private void OnFrequencyChanged(SerializedProperty newFrequency)
+		{
+			int newValue = newFrequency.enumValueIndex;
+			switch ((HandyOutlinesSettings.NoiseFrequency)newValue)
+			{
+				case HandyOutlinesSettings.NoiseFrequency.Low:
+					_waveCustomFrequencyField.value = 200f;
+					_waveCustomFrequencyField.style.display = DisplayStyle.None;
+					break;
+				case HandyOutlinesSettings.NoiseFrequency.Mid:
+					_waveCustomFrequencyField.value = 500f;
+					_waveCustomFrequencyField.style.display = DisplayStyle.None;
+					break;
+				case HandyOutlinesSettings.NoiseFrequency.High:
+					_waveCustomFrequencyField.value = 1000f;
+					_waveCustomFrequencyField.style.display = DisplayStyle.None;
+					break;
+				case HandyOutlinesSettings.NoiseFrequency.Custom:
+					_waveCustomFrequencyField.style.display = DisplayStyle.Flex;
+					break;
+			}
+		}
+
+		#endregion
+
+		#region Helpers
+		private Material GetOutlineMaterial(HandyOutlinesSettings.OutlineFilter newFilter)
+		{
+			string materialName = $"Outline_{newFilter}";
+            string[] guids = AssetDatabase.FindAssets($"{materialName} t:Material", new[] {MATERIALS_PATH});
+            if (guids.Length > 0)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                Material newMat = AssetDatabase.LoadAssetAtPath<Material>(path);
+                return newMat;
+            }
+            else
+            {
+                Debug.LogWarning($" {materialName} not found in {MATERIALS_PATH}");
+            }
+            return null;
+		}
+
+		public static OutlineFeature GetOutlineFeature()
+        {
+            var urpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            if (urpAsset == null)
+            {
+                Debug.LogWarning("No Universal Render Pipeline Asset found");
+                return null;
+            }
+            SerializedObject so = new SerializedObject(urpAsset);
+            SerializedProperty rendererDataListProp = so.FindProperty("m_RendererDataList");
+            if (rendererDataListProp == null || rendererDataListProp.arraySize == 0)
+            {
+                Debug.LogWarning("URP asset has no RendererData list");
+                return null;
+            }
+            int defaultRendererIndex = 0;
+            SerializedProperty defaultRendererProp = so.FindProperty("m_DefaultRendererIndex");
+            if (defaultRendererProp != null)
+            {
+                defaultRendererIndex = defaultRendererProp.intValue;
+            }
+            SerializedProperty rendererDataProp = rendererDataListProp.GetArrayElementAtIndex(defaultRendererIndex);
+            var rendererData = rendererDataProp.objectReferenceValue as ScriptableRendererData;
+            if (rendererData == null)
+            {
+                Debug.LogWarning("RendererData is null in URP asset.");
+                return null;
+            }
+            //Search for outline feature
+            foreach (var feature in rendererData.rendererFeatures)
+            {
+                if (feature is OutlineFeature outlineFeature)
+                    return outlineFeature;
+            }
+            Debug.LogWarning("No OutlineFeature found in renderer features.");
+            return null;
+        }
+		#endregion
 	}
 }

@@ -272,44 +272,44 @@ MonoBehaviour:
   outlineMaterial: {fileID: 2100000, guid: dd48d23dc5675cb4d8a62967b7c573c0, type: 2}
   Filter: 1
   FilterSelector: 1
-  Mode: 1
-  OutlineThickness: 0.1
+  Mode: 0
+  OutlineThickness: 1
   OutlineStrength: 1
-  Threshold: 0.086
+  Threshold: 0.05
   OutlineColor: {r: 1, g: 1, b: 1, a: 1}
-  EdgeMin: 0.1
-  Style: 1
-  DoubleMode: 1
-  DoubleThickness: 2.1
-  DoubleNormalThickness: 2.1
-  DoubleColor: {r: 0.38679248, g: 0.056559276, b: 0.056559276, a: 1}
-  BlendMode: 1
-  ApplyLightColor: 1
-  LightFactor: 0.5
-  ApplyNoise: 1
+  EdgeMin: 0.01
+  Style: 0
+  DoubleMode: 0
+  DoubleThickness: 1
+  DoubleNormalThickness: 2
+  DoubleColor: {r: 1, g: 1, b: 1, a: 1}
+  BlendMode: 0
+  ApplyLightColor: 0
+  LightFactor: 1
+  ApplyNoise: 0
   AnimateNoise: 0
-  noiseEffect: 1
-  noiseFrequency: 3
+  noiseEffect: 0
+  noiseFrequency: 0
   animateLines: 0
   StepTime: 0.2
-  NoiseScale: 200
+  NoiseScale: 0.3
   distortionAxis: 2
   NoiseStrength: {x: 0.01, y: 0.01}
-  UseNormal: 1
-  NormalThreshold: 0.8
-  NormalStrength: 1
-  NormalThickness: 0.1
+  UseNormal: 0
+  NormalThreshold: 1
+  NormalStrength: 0.7
+  NormalThickness: 2
   UseBloom: 0
   BloomIntensity: 2
-  BloomColor: {r: 1, g: 0.6243848, b: 0.21226418, a: 1}
+  BloomColor: {r: 1, g: 1, b: 1, a: 1}
   bloomEffect: 0
   UseIntermitent: 0
   IntermitentSpeed: 3
   CameraOrtographic: 0
-  textureEffect: 0
-  UseCustomTexture: 0
-  CustomTex: {fileID: 0}
-  TexSize: {x: 10, y: 10}
+  textureEffect: 1
+  UseCustomTexture: 1
+  CustomTex: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
+  TexSize: {x: 20, y: 10}
   excludedLayerMask:
     serializedVersion: 2
     m_Bits: 0

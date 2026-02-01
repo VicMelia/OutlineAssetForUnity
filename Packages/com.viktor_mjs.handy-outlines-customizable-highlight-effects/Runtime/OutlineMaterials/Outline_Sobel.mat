@@ -24,7 +24,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _CustomTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -42,34 +42,34 @@ Material:
     m_Ints: []
     m_Floats:
     - _AnimateNoise: 0
-    - _ApplyLightColor: 1
-    - _ApplyNoise: 1
+    - _ApplyLightColor: 0
+    - _ApplyNoise: 0
     - _BloomIntensity: 2
-    - _CustomTexture: 0
-    - _DoubleMode: 1
-    - _DoubleNormalThickness: 2.1
-    - _DoubleThickness: 2.1
-    - _EdgeMin: 0.1
+    - _CustomTexture: 1
+    - _DoubleMode: 0
+    - _DoubleNormalThickness: 2
+    - _DoubleThickness: 1
+    - _EdgeMin: 0.01
     - _FilterSelector: 1
     - _IntermitentSpeed: 3
-    - _LightFactor: 0.5
-    - _NoiseScale: 200
+    - _LightFactor: 1
+    - _NoiseScale: 0.3
     - _NormalNoise: 0
-    - _NormalStrength: 1
-    - _NormalThickness: 0.1
-    - _NormalThreshold: 0.8
+    - _NormalStrength: 0.7
+    - _NormalThickness: 2
+    - _NormalThreshold: 1
     - _OutlineStrength: 1
-    - _OutlineThickness: 0.1
+    - _OutlineThickness: 1
     - _StepTime: 0.2
-    - _Threshold: 0.086
+    - _Threshold: 0.05
     - _UseBloom: 0
     - _UseIntermitent: 0
-    - _UseNormal: 1
+    - _UseNormal: 0
     m_Colors:
-    - _BloomColor: {r: 1, g: 0.6243848, b: 0.21226418, a: 1}
-    - _DoubleColor: {r: 0.38679248, g: 0.056559276, b: 0.056559276, a: 1}
+    - _BloomColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DoubleColor: {r: 1, g: 1, b: 1, a: 1}
     - _NoiseStrength: {r: 0.01, g: 0.01, b: 0, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
-    - _TexSize: {r: 10, g: 10, b: 0, a: 0}
+    - _TexSize: {r: 20, g: 10, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

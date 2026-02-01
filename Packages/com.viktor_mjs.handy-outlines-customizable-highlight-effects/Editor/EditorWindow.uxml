@@ -1,82 +1,87 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <Style src="project://database/Packages/com.viktor_mjs.handy-outlines-customizable-highlight-effects/Editor/HandyOutlinesEditorStyle.uss?fileID=7433441132597879392&amp;guid=59f3268d10422674aba2f1384d3de80d&amp;type=3#HandyOutlinesEditorStyle" />
     <ui:VisualElement style="flex-grow: 1; padding: 10px;">
-        <ui:VisualElement name="SetupScreen" style="display: flex;">
-            <ui:VisualElement name="setupWarning" style="flex-direction: row; border-width: 2px; border-radius: 8px; border-color: rgb(255, 138, 0); margin-bottom: 10px; padding: 10px; align-items: center; overflow: hidden;">
+        <ui:VisualElement name="Setup_Screen" style="display: flex;">
+            <ui:VisualElement name="Setup_Warning" style="flex-direction: row; border-width: 2px; border-radius: 8px; border-color: rgb(255, 138, 0); margin-bottom: 10px; padding: 10px; align-items: center; overflow: hidden;">
                 <ui:Label text="⚠" style="font-size: 40px; color: rgb(255, 138, 0); margin-right: 10px; flex-shrink: 0;" />
                 <ui:Label text="The Handy Outlines package requires initial setup. Please click the Setup button to configure the package before use." name="warningText" style="flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 50px; white-space: normal; -unity-text-align: middle-left;" />
             </ui:VisualElement>
-            <ui:Button text="Setup" name="SetupButton" style="height: 35px; -unity-font-style: bold;" />
+            <ui:Button text="Setup" name="Setup_Button" style="height: 35px; -unity-font-style: bold;" />
         </ui:VisualElement>
-        <ui:ScrollView name="SettingsScreen" style="display: flex; flex-grow: 1;">
+        <ui:ScrollView name="Settings_Screen" style="display: flex; flex-grow: 1;">
             <ui:Foldout text="Filter Settings" name="Filter_Foldout" class="section-foldout filter-bg">
-                <ui:EnumField label="Filter Mode" name="Filter_Mode_Field" />
+                <ui:EnumField label="Filter Mode" name="Filter_Mode_Field" binding-path="_outlineFilter" />
             </ui:Foldout>
             <ui:Foldout text="Outline Settings" name="Outline_Foldout" value="true" class="section-foldout outline-bg">
-                <ui:EnumField label="Outline Mode" name="Outline_Mode_Field" />
-                <uie:ColorField label="Outline Color" name="Outline_Color_Field" value="rgb(255,255,255)" />
+                <ui:EnumField label="Outline Mode" name="Outline_Mode_Field" binding-path="_outlineMode" />
+                <uie:ColorField label="Outline Color" name="Outline_Color_Field" value="rgb(255,255,255)" binding-path="_outlineColor" />
                 <ui:VisualElement name="Depth_Settings_Element" class="inner-box">
                     <ui:Label text="Depth Settings" style="-unity-font-style: bold; font-size: 10px; opacity: 0.7;" />
-                    <ui:Slider label="Thickness" high-value="8" low-value="0.1" value="0.1" show-input-field="true" name="Depth_Thickness_Field" />
-                    <ui:Slider label="Opacity" high-value="1" low-value="0" value="1" show-input-field="true" name="Depth_Opacity_Field" />
-                    <ui:Slider label="Reduction" high-value="1" low-value="0" value="0" show-input-field="true" name="Depth_Reduction_Field" />
+                    <ui:Slider label="Thickness" high-value="8" low-value="0.1" value="0.1" show-input-field="true" name="Depth_Thickness_Field" binding-path="_outlineThickness" />
+                    <ui:Slider label="Opacity" high-value="1" low-value="0" value="1" show-input-field="true" name="Depth_Opacity_Field" binding-path="_outlineStrength" />
+                    <ui:Slider label="Reduction" high-value="1" low-value="0" value="0" show-input-field="true" name="Depth_Reduction_Field" binding-path="_outlineThreshold" />
                 </ui:VisualElement>
                 <ui:VisualElement name="Normal_Settings_Element" class="inner-box">
                     <ui:Label text="Normal Settings" style="-unity-font-style: bold; font-size: 10px; opacity: 0.7;" />
-                    <ui:Slider label="Thickness" high-value="8" low-value="0.1" value="0.1" show-input-field="true" name="Normal_Thickness_Field" />
-                    <ui:Slider label="Opacity" high-value="1" low-value="0" value="1" show-input-field="true" name="Normal_Opacity_Field" />
-                    <ui:Slider label="Reduction" high-value="1" low-value="0" value="0" show-input-field="true" name="Normal_Reduction_Field" />
+                    <ui:Slider label="Thickness" high-value="8" low-value="0.1" value="0.1" show-input-field="true" name="Normal_Thickness_Field" binding-path="_normalThickness" />
+                    <ui:Slider label="Opacity" high-value="1" low-value="0" value="1" show-input-field="true" name="Normal_Opacity_Field" binding-path="_normalStrength" />
+                    <ui:Slider label="Reduction" high-value="1" low-value="0" value="0" show-input-field="true" name="Normal_Reduction_Field" binding-path="_normalThreshold" />
                 </ui:VisualElement>
-                <ui:EnumField label="Outline Style" name="Outline_Style_Field" />
+                <ui:EnumField label="Outline Style" name="Outline_Style_Field" binding-path="_outlineStyle" />
                 <ui:VisualElement name="Outer_Outline_Settings_Element" class="inner-box">
                     <ui:Label text="Outer Outline Settings" style="-unity-font-style: bold; font-size: 10px; opacity: 0.7;" />
-                    <uie:ColorField label="Outer Color" name="Outer_Color_Field" value="rgb(255,255,255)" />
-                    <ui:Slider label="Outer Thickness" high-value="12" low-value="2.1" value="2.1" show-input-field="true" name="Outer_Thickness_Field" />
-                    <ui:Slider label="Outer Normal Thickness" high-value="0" low-value="2.1" value="0" show-input-field="true" name="Outer_Normal_Thickness_Field" />
+                    <uie:ColorField label="Outer Color" name="Outer_Color_Field" value="rgb(255,255,255)" binding-path="_doubleColor" />
+                    <ui:Slider label="Outer Thickness" high-value="12" low-value="2.1" value="2.1" show-input-field="true" name="Outer_Thickness_Field" binding-path="_doubleThickness" />
+                    <ui:Slider label="Outer Normal Thickness" high-value="0" low-value="2.1" value="0" show-input-field="true" name="Outer_Normal_Thickness_Field" binding-path="_doubleNormalThickness" />
                 </ui:VisualElement>
             </ui:Foldout>
             <ui:Foldout text="Light Color" name="Light_Foldout" class="section-foldout light-bg">
-                <ui:EnumField label="Blending" name="Light_Blending_Field" />
-                <ui:Slider label="Factor" high-value="1" low-value="0" value="0.5" show-input-field="true" name="Light_Blending_Factor_Field" />
+                <ui:EnumField label="Blending" name="Light_Blending_Field" binding-path="_blendMode" />
+                <ui:Slider label="Factor" high-value="1" low-value="0" value="0.5" show-input-field="true" name="Light_Blending_Factor_Field" binding-path="_lightFactor" />
             </ui:Foldout>
             <ui:Foldout text="Noise Settings" name="Noise_Foldout" class="section-foldout noise-bg">
-                <ui:EnumField label="Distortion Mode" name="Distortion_Mode_Field" />
+                <ui:EnumField label="Distortion Mode" name="Distortion_Mode_Field" binding-path="_noiseEffect" />
                 <ui:VisualElement name="Wave_Settings_Element" class="inner-box">
                     <ui:Label text="Wave Settings" style="-unity-font-style: bold; font-size: 10px; opacity: 0.7;" />
-                    <ui:EnumField label="Frequency" choices="Low, Mid, High, Custom" value="Low" name="Wave_Frequency_Field" />
-                    <ui:Slider label="Custom Frequency" high-value="2000" low-value="0.01" value="200" show-input-field="true" name="Wave_Custom_Frequency_Field" />
-                    <ui:EnumField label="Direction" choices="X, Y, Both directions" value="Both directions" name="Wave_Direction_Field" />
-                    <ui:Slider label="Intensity (X)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Wave_Intensity_X_Field" />
-                    <ui:Slider label="Intensity (Y)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Wave_Intensity_Y_Field" />
+                    <ui:EnumField label="Frequency" choices="Low, Mid, High, Custom" value="Low" name="Wave_Frequency_Field" binding-path="_noiseFrequency" />
+                    <ui:Slider label="Custom Frequency" high-value="2000" low-value="0.01" value="200" show-input-field="true" name="Wave_Custom_Frequency_Field" binding-path="_stepTime" />
+                    <ui:EnumField label="Direction" choices="X, Y, Both directions" value="Both directions" name="Wave_Direction_Field" binding-path="_distortionAxis" />
+                    <ui:Slider label="Intensity (X)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Wave_Intensity_X_Field" binding-path="_noiseStrength.x" />
+                    <ui:Slider label="Intensity (Y)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Wave_Intensity_Y_Field" binding-path="_noiseStrength.y" />
                 </ui:VisualElement>
                 <ui:VisualElement name="Pencil_Settings_Element" class="inner-box">
                     <ui:Label text="Pencil Settings" style="-unity-font-style: bold; font-size: 10px; opacity: 0.7;" />
-                    <ui:EnumField label="Direction" name="Pencil_Direction_Field" />
-                    <ui:Slider label="Intensity (X)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Pencil_Intensity_X_Field" />
-                    <ui:Slider label="Intensity (Y)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Pencil_Intensity_Y_Field" />
+                    <ui:EnumField label="Direction" name="Pencil_Direction_Field" binding-path="_distortionAxis" />
+                    <ui:Slider label="Intensity (X)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Pencil_Intensity_X_Field" binding-path="_noiseStrength.x" />
+                    <ui:Slider label="Intensity (Y)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Pencil_Intensity_Y_Field" binding-path="_noiseStrength.y" />
                 </ui:VisualElement>
                 <ui:VisualElement name="Custom_Settings_Element" class="inner-box">
                     <ui:Label text="Custom Settings" style="-unity-font-style: bold; font-size: 10px; opacity: 0.7;" />
-                    <ui:EnumField label="Direction" name="Custom_Direction_Field" />
-                    <ui:Slider label="Intensity (X)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Custom_Intensity_X_Field" />
-                    <ui:Slider label="Intensity (Y)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Custom_Intensity_Y_Field" />
-                    <ui:Slider label="Scale" high-value="5000" low-value="0" value="0" show-input-field="true" name="Custom_Scale_Field" />
+                    <ui:EnumField label="Direction" name="Custom_Direction_Field" binding-path="_distortionAxis" />
+                    <ui:Slider label="Intensity (X)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Custom_Intensity_X_Field" binding-path="_noiseStrength.x" />
+                    <ui:Slider label="Intensity (Y)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Custom_Intensity_Y_Field" binding-path="_noiseStrength.y" />
+                    <ui:Slider label="Scale" high-value="5000" low-value="0" value="0" show-input-field="true" name="Custom_Scale_Field" binding-path="_noiseScale" />
                 </ui:VisualElement>
-                <ui:EnumField label="Animate Distortion" name="Animate_Distortion_Field" />
-                <ui:Slider label="Animation Speed" high-value="0.5" low-value="0.01" value="0.01" show-input-field="true" name="Animate_Speed_Field" />
+                <ui:EnumField label="Animate Distortion" name="Animate_Distortion_Field" binding-path="_animateLines" />
+                <ui:Slider label="Animation Speed" high-value="0.5" low-value="0.01" value="0.01" show-input-field="true" name="Animate_Speed_Field" binding-path="_stepTime" />
             </ui:Foldout>
             <ui:Foldout text="Bloom" name="Bloom_Foldout" class="section-foldout bloom-bg">
-                <ui:EnumField label="Bloom Mode" name="Bloom_Mode_Field" />
-                <uie:ColorField label="Color" name="Bloom_Color_Field" value="rgb(255,255,255)" />
-                <ui:Slider label="Intensity" high-value="5" low-value="1" value="2" show-input-field="true" name="Bloom_Intensity_Field" />
-                <ui:Slider label="Intermitent speed" high-value="5" low-value="0.5" value="3" show-input-field="true" name="Intermitent_Speed_Field" />
+                <ui:EnumField label="Bloom Mode" name="Bloom_Mode_Field" binding-path="_bloomEffect" />
+                <uie:ColorField label="Color" name="Bloom_Color_Field" value="rgb(255,255,255)" binding-path="_bloomColor" />
+                <ui:Slider label="Intensity" high-value="5" low-value="1" value="2" show-input-field="true" name="Bloom_Intensity_Field" binding-path="_bloomIntensity" />
+                <ui:Slider label="Intermitent speed" high-value="5" low-value="0.5" value="3" show-input-field="true" name="Intermitent_Speed_Field" binding-path="_bloomIntermitentSpeed" />
             </ui:Foldout>
             <ui:Foldout text="Custom Texture (Advanced)" name="Texture_Foldout" class="section-foldout texture-bg">
-                <ui:EnumField label="Custom Texture" name="Custom_Texture_Mode_Field" />
-                <uie:ObjectField label="Custom Texture" object-type="UnityEngine.Texture2D, UnityEngine.TextCoreFontEngineModule" name="Custom_Texture_Field" type="UnityEngine.Texture2D, UnityEngine.CoreModule" allow-scene-objects="false" />
+                <ui:EnumField label="Custom Texture" name="Custom_Texture_Mode_Field" binding-path="_textureEffect" />
+                <uie:ObjectField label="Custom Texture" object-type="UnityEngine.Texture2D, UnityEngine.TextCoreFontEngineModule" name="Custom_Texture_Field" type="UnityEngine.Texture2D, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="_customTex" />
+                <ui:VisualElement name="Texture_Size_Element" class="inner-box">
+                    <ui:Label text="Texture Size" style="-unity-font-style: bold; font-size: 10px; opacity: 0.7;" />
+                    <ui:Slider label="Intensity (X)" high-value="20" low-value="0.01" value="0.01" show-input-field="true" name="Texture_Size_X_Field" binding-path="_texSize.x" />
+                    <ui:Slider label="Intensity (Y)" high-value="20" low-value="0.01" value="0.01" show-input-field="true" name="Texture_Size_Y_Field" binding-path="_texSize.y" />
+                </ui:VisualElement>
             </ui:Foldout>
             <ui:Foldout text="Layer Mask" name="LayerMask_Foldout" class="section-foldout layer-bg">
-                <uie:LayerMaskField label="Exclude from" name="Layer_Mask_Field" />
+                <uie:LayerMaskField label="Exclude from" name="Layer_Mask_Field" binding-path="_excludeLayerMask" />
             </ui:Foldout>
         </ui:ScrollView>
     </ui:VisualElement>
