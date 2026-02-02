@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HandyOutlinesSettings
   m_EditorClassIdentifier: 
   _outlineMaterial: {fileID: 2100000, guid: 61265240d3020134c8ffe5542c81f12f, type: 2}
-  _outlineFilter: 0
+  _outlineFilter: 1
   _outlineMode: 1
   _outlineThickness: 3.01
   _outlineStrength: 1

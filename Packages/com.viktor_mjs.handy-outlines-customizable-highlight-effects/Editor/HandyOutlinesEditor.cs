@@ -601,8 +601,15 @@ namespace HandyOutlines
 			
 			rendererData.rendererFeatures.Add(feature);
 			
+			EditorUtility.SetDirty(urpAsset);
 			EditorUtility.SetDirty(rendererData);
+
+			GraphicsSettings.defaultRenderPipeline = null;
+			GraphicsSettings.defaultRenderPipeline = urpAsset;
+
 			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
+			UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
 		}
 		#endregion
 	}
