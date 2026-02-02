@@ -116,7 +116,7 @@ namespace HandyOutlines
             _outlineMaterial.SetColor("_DoubleColor", _doubleColor);
 
             //Noise
-            _outlineMaterial.SetFloat("_ApplyNoise", _noiseEffect == HandyOutlinesSettings.NoiseEffect.Off ? 0f : 1f);
+            _outlineMaterial.SetFloat("_ApplyNoise", _noiseEffect == NoiseEffect.Off ? 0f : 1f);
             _outlineMaterial.SetFloat("_AnimateNoise", (float)_animateLines);
             _outlineMaterial.SetFloat("_NoiseScale", _noiseScale);
             _outlineMaterial.SetVector("_NoiseStrength", _noiseStrength);
@@ -133,12 +133,12 @@ namespace HandyOutlines
             _outlineMaterial.SetFloat("_NormalThickness", _normalThickness);
 
             //Bloom
-            _outlineMaterial.SetFloat("_UseBloom", _bloomEffect == HandyOutlinesSettings.BloomEffect.Off ? 0f : 1f);
+            _outlineMaterial.SetFloat("_UseBloom", _bloomEffect == BloomEffect.Off ? 0f : 1f);
             _outlineMaterial.SetFloat("_BloomIntensity", _bloomIntensity);
             _outlineMaterial.SetColor("_BloomColor", _bloomColor);
 
             //Intermittent
-            _outlineMaterial.SetFloat("_UseIntermitent", _bloomEffect == HandyOutlinesSettings.BloomEffect.Intermitent ? 1f : 0f);
+            _outlineMaterial.SetFloat("_UseIntermitent", _bloomEffect == BloomEffect.Intermitent ? 1f : 0f);
             _outlineMaterial.SetFloat("_IntermitentSpeed", _bloomIntermitentSpeed);
 
             //Custom Texture
@@ -155,6 +155,11 @@ namespace HandyOutlines
                     bloom.tint.value = _bloomColor;
                 }
             }*/
+        }
+
+        public OutlineFilter GetOutlineFilter()
+        {
+            return _outlineFilter;
         }
     }
 }

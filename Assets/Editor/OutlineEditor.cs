@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEditor;
 using static OutlineManager;
-using static OutlineFeature;
+using static HandyOutlines.OutlineFeature;
+using HandyOutlines;
 using UnityEditorInternal;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;

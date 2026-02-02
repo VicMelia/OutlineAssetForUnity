@@ -14,27 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _outlineMaterial: {fileID: 2100000, guid: 61265240d3020134c8ffe5542c81f12f, type: 2}
   _outlineFilter: 0
-  _outlineMode: 0
-  _outlineThickness: 4.03
-  _outlineStrength: 0.744
-  _outlineThreshold: 0.323
-  _outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  _outlineMode: 1
+  _outlineThickness: 3.01
+  _outlineStrength: 1
+  _outlineThreshold: 0.519
+  _outlineColor: {r: 1, g: 0.96540874, b: 0.96540874, a: 1}
   _outlineStyle: 0
-  _doubleThickness: 1
-  _doubleNormalThickness: 2
-  _doubleColor: {r: 1, g: 1, b: 1, a: 1}
+  _doubleThickness: 0.81
+  _doubleNormalThickness: 0.68
+  _doubleColor: {r: 0, g: 0, b: 0, a: 1}
   _blendMode: 0
-  _lightFactor: 1
+  _lightFactor: 0.953
   _noiseEffect: 1
   _noiseFrequency: 0
   _animateLines: 0
-  _stepTime: 2000
+  _stepTime: 200
   _noiseScale: 0.3
   _distortionAxis: 2
-  _noiseStrength: {x: 0.1, y: 0.1}
+  _noiseStrength: {x: 0.01, y: 0.01}
   _normalThreshold: 1
-  _normalStrength: 0.867
-  _normalThickness: 2.9
+  _normalStrength: 1
+  _normalThickness: 1.67
   _bloomIntensity: 1
   _bloomColor: {r: 1, g: 1, b: 1, a: 1}
   _bloomEffect: 0
@@ -44,4 +44,4 @@ MonoBehaviour:
   _texSize: {x: 20, y: 10}
   _excludeLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64

@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.XR;
 
 namespace HandyOutlines
 {
@@ -50,10 +51,12 @@ namespace HandyOutlines
 		private LayerMaskField _layerMaskField;
 		#endregion
 
+		#region Class Variables
 		private HandyOutlinesSettings _settings;
 		private SerializedObject _serializedSettings;
 		private const string SETTINGS_PATH = "Packages/com.viktor_mjs.handy-outlines-customizable-highlight-effects/Runtime/HandyOutlinesSettings.asset";
 		private const string MATERIALS_PATH = "Packages/com.viktor_mjs.handy-outlines-customizable-highlight-effects/Runtime/OutlineMaterials";
+		#endregion
 
 		[MenuItem("Tools/Handy Outlines")]
 		public static void ShowWindow()
@@ -76,6 +79,7 @@ namespace HandyOutlines
 			_root.Bind(_serializedSettings);
 
 			AssignUIElements();
+			InitialUISync();
 			RegisterCallbacks();
 			CheckSetup();
         }
@@ -88,7 +92,7 @@ namespace HandyOutlines
 		{
 			_settings = AssetDatabase.LoadAssetAtPath<HandyOutlinesSettings>(SETTINGS_PATH);
 			if (_settings != null) return _settings;
-			_settings = ScriptableObject.CreateInstance<HandyOutlinesSettings>();
+			_settings = CreateInstance<HandyOutlinesSettings>();
 			AssetDatabase.CreateAsset(_settings, SETTINGS_PATH);
 			AssetDatabase.SaveAssets();
 			return _settings;
@@ -137,11 +141,11 @@ namespace HandyOutlines
 			_customIntensityYField = _root.Q<Slider>("Custom_Intensity_Y_Field");
 			_customScaleField = _root.Q<Slider>("Custom_Scale_Field");
 			_animateLinesField = _root.Q<EnumField>("Animate_Distortion_Field");
-			_animationSpeedField = _root.Q<Slider>("Animation_Speed_Field");
+			_animationSpeedField = _root.Q<Slider>("Animate_Speed_Field");
 			_bloomEffectField = _root.Q<EnumField>("Bloom_Effect_Field");
 			_bloomColorField = _root.Q<ColorField>("Bloom_Color_Field");
 			_bloomIntensityField = _root.Q<Slider>("Bloom_Intensity_Field");
-			_bloomIntermitentSpeedField = _root.Q<Slider>("Bloom_Intermitent_Speed_Field");
+			_bloomIntermitentSpeedField = _root.Q<Slider>("Intermitent_Speed_Field");
 			_customTextureEffectField = _root.Q<EnumField>("Custom_Texture_Effect_Field");
 			_customTextureField = _root.Q<ObjectField>("Custom_Texture_Field");
 			_textureSizeElement = _root.Q<VisualElement>("Texture_Size_Element");
@@ -150,40 +154,59 @@ namespace HandyOutlines
 			_layerMaskField = _root.Q<LayerMaskField>("Layer_Mask_Field");
 		}
 
+		/// <summary>
+		/// Initial synchronization of the UI based on the current settings values.
+		/// </summary>
+		private void InitialUISync()
+		{
+			OnFilterChanged(_serializedSettings.FindProperty("_outlineFilter"));
+			OnModeChanged(_serializedSettings.FindProperty("_outlineMode"));
+			OnStyleChanged(_serializedSettings.FindProperty("_outlineStyle"));
+			OnBlendingChanged(_serializedSettings.FindProperty("_blendMode"));
+			OnDistortionChanged(_serializedSettings.FindProperty("_noiseEffect"));
+			OnFrequencyChanged(_serializedSettings.FindProperty("_noiseFrequency"));
+			OnDirectionChanged(_serializedSettings.FindProperty("_distortionAxis"));
+			OnAnimateLinesChanged(_serializedSettings.FindProperty("_animateLines"));
+			OnBloomModeChanged(_serializedSettings.FindProperty("_bloomEffect"));
+			OnCustomTextureEffectChanged(_serializedSettings.FindProperty("_textureEffect"));
+			OnCustomTextureChanged(_serializedSettings.FindProperty("_customTex"));
+		}
+
+		/// <summary>
+		/// Registers all necessary callbacks for UI elements to handle user interactions.
+		/// </summary>
 		private void RegisterCallbacks()
 		{
 			_setupButton.clicked += OnSetupButtonClicked;
-			SerializedProperty filterProp = _serializedSettings.FindProperty("_outlineFilter");
-			_root.TrackPropertyValue(filterProp, newFilter => OnFilterChanged(newFilter));
-			SerializedProperty modeProp = _serializedSettings.FindProperty("_outlineMode");
-			_root.TrackPropertyValue(modeProp, newMode => OnModeChanged(newMode));
-			SerializedProperty styleProp = _serializedSettings.FindProperty("_outlineStyle");
-			_root.TrackPropertyValue(styleProp, newStyle => OnStyleChanged(newStyle));
-			SerializedProperty blendingProp = _serializedSettings.FindProperty("_blendMode");
-			_root.TrackPropertyValue(blendingProp, newBlending => OnBlendingChanged(newBlending));
-			SerializedProperty distortionProp = _serializedSettings.FindProperty("_noiseEffect");
-			_root.TrackPropertyValue(distortionProp, newDistortion => OnDistortionChanged(newDistortion));
-			SerializedProperty frequencyProp = _serializedSettings.FindProperty("_noiseFrequency");
-			_root.TrackPropertyValue(frequencyProp, newFrequency => OnFrequencyChanged(newFrequency));
-			
-
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_outlineFilter"), newFilter => OnFilterChanged(newFilter));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_outlineMode"), newMode => OnModeChanged(newMode));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_outlineStyle"), newStyle => OnStyleChanged(newStyle));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_blendMode"), newBlending => OnBlendingChanged(newBlending));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_noiseEffect"), newDistortion => OnDistortionChanged(newDistortion));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_noiseFrequency"), newFrequency => OnFrequencyChanged(newFrequency));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_distortionAxis"), newDirection => OnDirectionChanged(newDirection));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_animateLines"), newAnimate => OnAnimateLinesChanged(newAnimate));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_bloomEffect"), newBloomMode => OnBloomModeChanged(newBloomMode));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_textureEffect"), newCustomTextureMode => OnCustomTextureEffectChanged(newCustomTextureMode));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_customTex"), newTexture => OnCustomTextureChanged(newTexture));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_excludeLayerMask"), newLayerMask => OnExcludeLayerMaskChanged(newLayerMask));
 			_root.TrackSerializedObjectValue(_serializedSettings, so => { _settings.UpdateOutlineMaterial(); });
 		}
 
 		/// <summary>
 		/// Checks if the outline system is set up in the current project and toggles between setup and settings screens accordingly.
 		/// </summary>
-		private void CheckSetup() //TODO: Implement actual setup check
+		private void CheckSetup()
 		{
-			if(true) // Replace this with actual setup check
-			{
-				_setupScreen.style.display = DisplayStyle.None;
-				_settingsScreen.style.display = DisplayStyle.Flex;
-			}
-			else
+			if(GetOutlineFeature() == null)
 			{
 				_setupScreen.style.display = DisplayStyle.Flex;
 				_settingsScreen.style.display = DisplayStyle.None;
+			}
+			else
+			{
+				_setupScreen.style.display = DisplayStyle.None;
+				_settingsScreen.style.display = DisplayStyle.Flex;
 			}
 		}
 
@@ -192,14 +215,17 @@ namespace HandyOutlines
 		{
 			_setupScreen.style.display = DisplayStyle.None;
 			_settingsScreen.style.display = DisplayStyle.Flex;
-			//TODO: Implement actual setup process
+			AddOutlineFeature();
+			CheckSetup();
 		}
 
+		/// <summary>
+		/// Handles changes to the outline filter selection.
+		/// </summary>
+		/// <param name="newFilter"></param> The new selected filter property.
 		private void OnFilterChanged(SerializedProperty newFilter)
 		{
-			Debug.Log("Outline filter changed");
-			int newValue = newFilter.enumValueIndex;
-			Material newMat = GetOutlineMaterial((HandyOutlinesSettings.OutlineFilter)newValue);
+			Material newMat = GetOutlineMaterial((HandyOutlinesSettings.OutlineFilter)newFilter.enumValueIndex);
 			if (newMat != null)
 			{
 				OutlineFeature.SharedOutlineMaterial = newMat;
@@ -215,112 +241,262 @@ namespace HandyOutlines
 			}
 			else
 			{
-				Debug.LogWarning($"Material for filter {(HandyOutlinesSettings.OutlineFilter)newValue} not found in {MATERIALS_PATH}");
+				Debug.LogWarning($"Material for filter {(HandyOutlinesSettings.OutlineFilter)newFilter.enumValueIndex} not found in {MATERIALS_PATH}");
 			}
 		}
 
+		/// <summary>
+		/// Handles changes to the outline mode selection.
+		/// </summary>
+		/// <param name="newMode"></param> The new selected mode property.
 		private void OnModeChanged(SerializedProperty newMode)
 		{
-			int newValue = newMode.enumValueIndex;
-			switch ((HandyOutlinesSettings.OutlineMode)newValue)
+			switch (newMode.enumValueIndex)
 			{
-				case HandyOutlinesSettings.OutlineMode.DepthOnly:
+				case (int)HandyOutlinesSettings.OutlineMode.DepthOnly:
 					_depthSettingsElement.style.display = DisplayStyle.Flex;
 					_normalsSettingsElement.style.display = DisplayStyle.None;
 					break;
-				case HandyOutlinesSettings.OutlineMode.DepthAndNormals:
+				case (int)HandyOutlinesSettings.OutlineMode.DepthAndNormals:
 					_depthSettingsElement.style.display = DisplayStyle.Flex;
 					_normalsSettingsElement.style.display = DisplayStyle.Flex;
 					break;
 			}
 		}
 
+		/// <summary>
+		/// Handles changes to the outline style selection.
+		/// </summary>
+		/// <param name="newStyle"></param> The new selected style property.
 		private void OnStyleChanged(SerializedProperty newStyle)
 		{
-			int newValue = newStyle.enumValueIndex;
-			switch ((HandyOutlinesSettings.OutlineStyle)newValue)
+			switch (newStyle.enumValueIndex)
 			{
-				case HandyOutlinesSettings.OutlineStyle.Simple:
+				case (int)HandyOutlinesSettings.OutlineStyle.Simple:
 					_outerOutlineSettingsElement.style.display = DisplayStyle.None;
 					break;
-				case HandyOutlinesSettings.OutlineStyle.Double:
+				case (int)HandyOutlinesSettings.OutlineStyle.Double:
 					_outerOutlineSettingsElement.style.display = DisplayStyle.Flex;
 					break;
 			}
 		}
 
+		/// <summary>
+		/// Handles changes to the light blending mode selection.
+		/// </summary>
+		/// <param name="newBlending"></param> The new selected blending property.
 		private void OnBlendingChanged(SerializedProperty newBlending)
 		{
-			int newValue = newBlending.enumValueIndex;
-			switch ((HandyOutlinesSettings.LightBlend)newValue)
+			switch (newBlending.enumValueIndex)
 			{
-				case HandyOutlinesSettings.LightBlend.Off:
+				case (int)HandyOutlinesSettings.LightBlend.Off:
 					_lightBlendingFactorField.style.display = DisplayStyle.None;
 					break;
-				case HandyOutlinesSettings.LightBlend.On:
+				case (int)HandyOutlinesSettings.LightBlend.On:
 					_lightBlendingFactorField.style.display = DisplayStyle.Flex;
 					break;
 			}
 		}
 
+		/// <summary>
+		/// Handles changes to the distortion effect selection.
+		/// </summary>
+		/// <param name="newDistortion"></param> The new selected distortion property.
 		private void OnDistortionChanged(SerializedProperty newDistortion)
 		{
-			int newValue = newDistortion.enumValueIndex;
-			switch ((HandyOutlinesSettings.NoiseEffect)newValue)
+			switch (newDistortion.enumValueIndex)
 			{
-				case HandyOutlinesSettings.NoiseEffect.Off:
+				case (int)HandyOutlinesSettings.NoiseEffect.Off:
 					_wavesSettingsElement.style.display = DisplayStyle.None;
 					_pencilSettingsElement.style.display = DisplayStyle.None;
 					_customSettingsElement.style.display = DisplayStyle.None;
 					_animateLinesField.style.display = DisplayStyle.None;
+					_animationSpeedField.style.display = DisplayStyle.None;
 					break;
-				case HandyOutlinesSettings.NoiseEffect.Waves:
+				case (int)HandyOutlinesSettings.NoiseEffect.Waves:
 					_wavesSettingsElement.style.display = DisplayStyle.Flex;
 					_pencilSettingsElement.style.display = DisplayStyle.None;
 					_customSettingsElement.style.display = DisplayStyle.None;
 					_animateLinesField.style.display = DisplayStyle.Flex;
+					if ((HandyOutlinesSettings.AnimateLines)_animateLinesField.value == HandyOutlinesSettings.AnimateLines.On) 
+					{
+						_animationSpeedField.style.display = DisplayStyle.Flex;
+					}
 					break;
-				case HandyOutlinesSettings.NoiseEffect.Pencil:
+				case (int)HandyOutlinesSettings.NoiseEffect.Pencil:
 					_wavesSettingsElement.style.display = DisplayStyle.None;
 					_pencilSettingsElement.style.display = DisplayStyle.Flex;
 					_customSettingsElement.style.display = DisplayStyle.None;
 					_animateLinesField.style.display = DisplayStyle.Flex;
+					if ((HandyOutlinesSettings.AnimateLines)_animateLinesField.value == HandyOutlinesSettings.AnimateLines.On) 
+					{
+						_animationSpeedField.style.display = DisplayStyle.Flex;
+					}
 					break;
-				case HandyOutlinesSettings.NoiseEffect.Custom:
+				case (int)HandyOutlinesSettings.NoiseEffect.Custom:
 					_wavesSettingsElement.style.display = DisplayStyle.None;
 					_pencilSettingsElement.style.display = DisplayStyle.None;
 					_customSettingsElement.style.display = DisplayStyle.Flex;
 					_animateLinesField.style.display = DisplayStyle.Flex;
+					if ((HandyOutlinesSettings.AnimateLines)_animateLinesField.value == HandyOutlinesSettings.AnimateLines.On) 
+					{
+						_animationSpeedField.style.display = DisplayStyle.Flex;
+					}
 					break;
 			}
 		}
 
+		/// <summary>
+		/// Handles changes to the noise frequency selection.
+		/// </summary>
+		/// <param name="newFrequency"></param> The new selected frequency property.
 		private void OnFrequencyChanged(SerializedProperty newFrequency)
 		{
-			int newValue = newFrequency.enumValueIndex;
-			switch ((HandyOutlinesSettings.NoiseFrequency)newValue)
+			switch (newFrequency.enumValueIndex)
 			{
-				case HandyOutlinesSettings.NoiseFrequency.Low:
+				case (int)HandyOutlinesSettings.NoiseFrequency.Low:
 					_waveCustomFrequencyField.value = 200f;
 					_waveCustomFrequencyField.style.display = DisplayStyle.None;
 					break;
-				case HandyOutlinesSettings.NoiseFrequency.Mid:
+				case (int)HandyOutlinesSettings.NoiseFrequency.Mid:
 					_waveCustomFrequencyField.value = 500f;
 					_waveCustomFrequencyField.style.display = DisplayStyle.None;
 					break;
-				case HandyOutlinesSettings.NoiseFrequency.High:
+				case (int)HandyOutlinesSettings.NoiseFrequency.High:
 					_waveCustomFrequencyField.value = 1000f;
 					_waveCustomFrequencyField.style.display = DisplayStyle.None;
 					break;
-				case HandyOutlinesSettings.NoiseFrequency.Custom:
+				case (int)HandyOutlinesSettings.NoiseFrequency.Custom:
 					_waveCustomFrequencyField.style.display = DisplayStyle.Flex;
 					break;
 			}
 		}
 
+		/// <summary>
+		/// Handles changes to the distortion direction selection.
+		/// </summary>
+		/// <param name="newDirection"></param> The new selected direction property.
+		private void OnDirectionChanged(SerializedProperty newDirection)
+		{
+			switch (newDirection.enumValueIndex)
+			{
+				case (int)HandyOutlinesSettings.DistortionAxis.X:
+				_waveIntensityXField.style.display = DisplayStyle.Flex;
+					_pencilIntensityXField.style.display = DisplayStyle.Flex;
+					_customIntensityXField.style.display = DisplayStyle.Flex;
+					_waveIntensityYField.style.display = DisplayStyle.None;
+					_pencilIntensityYField.style.display = DisplayStyle.None;
+					_customIntensityYField.style.display = DisplayStyle.None;
+					_waveIntensityYField.value = 0f; //Just need one of the three to reset as they are bound to the same property
+					break;
+				case (int)HandyOutlinesSettings.DistortionAxis.Y:
+					_waveIntensityXField.style.display = DisplayStyle.None;
+					_pencilIntensityXField.style.display = DisplayStyle.None;
+					_customIntensityXField.style.display = DisplayStyle.None;
+					_waveIntensityYField.style.display = DisplayStyle.Flex;
+					_pencilIntensityYField.style.display = DisplayStyle.Flex;
+					_customIntensityYField.style.display = DisplayStyle.Flex;
+					_waveIntensityXField.value = 0f; //Just need one of the three to reset as they are bound to the same property
+					break;
+				case (int)HandyOutlinesSettings.DistortionAxis.BothDirections:
+					_waveIntensityXField.style.display = DisplayStyle.Flex;
+					_pencilIntensityXField.style.display = DisplayStyle.Flex;
+					_customIntensityXField.style.display = DisplayStyle.Flex;
+					_waveIntensityYField.style.display = DisplayStyle.Flex;
+					_pencilIntensityYField.style.display = DisplayStyle.Flex;
+					_customIntensityYField.style.display = DisplayStyle.Flex;
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Handles changes to the animate lines selection.
+		/// </summary>
+		/// <param name="newAnimate"></param> The new selected animate lines property.
+		private void OnAnimateLinesChanged(SerializedProperty newAnimate)
+		{
+			switch (newAnimate.enumValueIndex)
+			{
+				case (int)HandyOutlinesSettings.AnimateLines.Off:
+					_animationSpeedField.style.display = DisplayStyle.None;
+					break;
+				case (int)HandyOutlinesSettings.AnimateLines.On:
+					_animationSpeedField.style.display = DisplayStyle.Flex;
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Handles changes to the bloom effect selection.
+		/// </summary>
+		/// <param name="newBloomMode"></param> The new selected bloom effect property.
+		private void OnBloomModeChanged(SerializedProperty newBloomMode)
+		{
+			switch (newBloomMode.enumValueIndex)
+			{
+				case (int)HandyOutlinesSettings.BloomEffect.Off:
+					_bloomColorField.style.display = DisplayStyle.None;
+					_bloomIntensityField.style.display = DisplayStyle.None;
+					_bloomIntermitentSpeedField.style.display = DisplayStyle.None;
+					break;
+				case (int)HandyOutlinesSettings.BloomEffect.Simple:
+					_bloomColorField.style.display = DisplayStyle.Flex;
+					_bloomIntensityField.style.display = DisplayStyle.Flex;
+					_bloomIntermitentSpeedField.style.display = DisplayStyle.None;
+					_outlineColorField.value = Color.white; //Force outline color to white for best bloom results
+					if (_outlineStyleField.value.Equals(HandyOutlinesSettings.OutlineStyle.Double)) _outerColorField.value = Color.white;
+					break;
+				case (int)HandyOutlinesSettings.BloomEffect.Intermitent:
+					_bloomColorField.style.display = DisplayStyle.Flex;
+					_bloomIntensityField.style.display = DisplayStyle.Flex;
+					_bloomIntermitentSpeedField.style.display = DisplayStyle.Flex;
+					_outlineColorField.value = Color.white; //Force outline color to white for best bloom results
+					if (_outlineStyleField.value.Equals(HandyOutlinesSettings.OutlineStyle.Double)) _outerColorField.value = Color.white;
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Handles changes to the custom texture effect selection.
+		/// </summary>
+		/// <param name="newCustomTextureMode"></param> The new selected custom texture effect property.
+		private void OnCustomTextureEffectChanged(SerializedProperty newCustomTextureMode)
+		{
+			switch (newCustomTextureMode.enumValueIndex)
+			{
+				case (int)HandyOutlinesSettings.TextureEffect.Off:
+					_customTextureField.style.display = DisplayStyle.None;
+					_textureSizeElement.style.display = DisplayStyle.None;
+					break;
+				case (int)HandyOutlinesSettings.TextureEffect.On:
+					_customTextureField.style.display = DisplayStyle.Flex;
+					if(_customTextureField.value != null) _textureSizeElement.style.display = DisplayStyle.Flex;
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Handles changes to the custom texture selection.
+		/// </summary>
+		/// <param name="newTexture"></param> The new selected custom texture property.
+		private void OnCustomTextureChanged(SerializedProperty newTexture)
+		{
+			if (newTexture.objectReferenceValue != null) _textureSizeElement.style.display = DisplayStyle.Flex;
+			else _textureSizeElement.style.display = DisplayStyle.None;
+		}
+
+		private void OnExcludeLayerMaskChanged(SerializedProperty newLayerMask)
+		{
+			OutlineFeature.SharedSettings.excludedLayerMask = (LayerMask)newLayerMask.intValue;
+		}
 		#endregion
 
 		#region Helpers
+		/// <summary>
+		/// Retrieves the outline material corresponding to the selected outline filter.
+		/// </summary>
+		/// <param name="newFilter"></param> The selected outline filter.
+		/// <returns></returns> The corresponding outline material.
 		private Material GetOutlineMaterial(HandyOutlinesSettings.OutlineFilter newFilter)
 		{
 			string materialName = $"Outline_{newFilter}";
@@ -338,43 +514,96 @@ namespace HandyOutlines
             return null;
 		}
 
+		/// <summary>
+		/// Retrieves the OutlineFeature from the current Universal Render Pipeline Asset.
+		/// </summary>
+		/// <returns></returns> The OutlineFeature if found, otherwise null.
 		public static OutlineFeature GetOutlineFeature()
         {
-            var urpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            UniversalRenderPipelineAsset urpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+
             if (urpAsset == null)
             {
                 Debug.LogWarning("No Universal Render Pipeline Asset found");
                 return null;
             }
+
             SerializedObject so = new SerializedObject(urpAsset);
             SerializedProperty rendererDataListProp = so.FindProperty("m_RendererDataList");
+
             if (rendererDataListProp == null || rendererDataListProp.arraySize == 0)
             {
                 Debug.LogWarning("URP asset has no RendererData list");
                 return null;
             }
+
             int defaultRendererIndex = 0;
             SerializedProperty defaultRendererProp = so.FindProperty("m_DefaultRendererIndex");
+
             if (defaultRendererProp != null)
             {
                 defaultRendererIndex = defaultRendererProp.intValue;
             }
+
             SerializedProperty rendererDataProp = rendererDataListProp.GetArrayElementAtIndex(defaultRendererIndex);
-            var rendererData = rendererDataProp.objectReferenceValue as ScriptableRendererData;
-            if (rendererData == null)
+            ScriptableRendererData rendererData = rendererDataProp.objectReferenceValue as ScriptableRendererData;
+            
+			if (rendererData == null)
             {
                 Debug.LogWarning("RendererData is null in URP asset.");
                 return null;
             }
-            //Search for outline feature
+
             foreach (var feature in rendererData.rendererFeatures)
             {
-                if (feature is OutlineFeature outlineFeature)
-                    return outlineFeature;
+                if (feature is OutlineFeature outlineFeature) return outlineFeature;
             }
-            Debug.LogWarning("No OutlineFeature found in renderer features.");
+			Debug.LogWarning("No OutlineFeature found in the current URP RendererData.");
             return null;
         }
+
+		private void AddOutlineFeature()
+		{
+			UniversalRenderPipelineAsset urpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+			if (urpAsset == null) return;
+
+			SerializedObject so = new SerializedObject(urpAsset);
+			int defaultRendererIndex = so.FindProperty("m_DefaultRendererIndex").intValue;
+			SerializedProperty rendererDataList = so.FindProperty("m_RendererDataList");
+			ScriptableRendererData rendererData = rendererDataList.GetArrayElementAtIndex(defaultRendererIndex).objectReferenceValue as ScriptableRendererData;
+
+			if (rendererData == null) return;
+
+			bool hasSSAO = false;
+			foreach (var rendererFeature in rendererData.rendererFeatures)
+			{
+				if (rendererFeature != null && rendererFeature.GetType().Name.Contains("ScreenSpaceAmbientOcclusion"))
+				{
+					hasSSAO = true;
+					break;
+				}
+			}
+
+			if (!hasSSAO)
+			{
+				var ssaoFeature = CreateInstance<ScreenSpaceAmbientOcclusion>();
+				ssaoFeature.name = "Screen Space Ambient Occlusion";
+				AssetDatabase.AddObjectToAsset(ssaoFeature, rendererData);
+				rendererData.rendererFeatures.Add(ssaoFeature);
+			}
+
+			OutlineFeature feature = CreateInstance<OutlineFeature>();
+			feature.name = "Handy Outline Feature";
+			
+			feature.material = GetOutlineMaterial(_settings.GetOutlineFilter());
+
+			AssetDatabase.AddObjectToAsset(feature, rendererData);
+			
+			rendererData.rendererFeatures.Add(feature);
+			
+			EditorUtility.SetDirty(rendererData);
+			AssetDatabase.SaveAssets();
+		}
 		#endregion
 	}
 }

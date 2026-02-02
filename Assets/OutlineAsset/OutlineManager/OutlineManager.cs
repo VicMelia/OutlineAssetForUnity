@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-
+using HandyOutlines;
 /// <summary>
 /// Manages the outline rendering for objects in the scene using the Universal Render Pipeline (URP).
 /// Provides functionality to customize outlines including filter types, outline thickness, colors,

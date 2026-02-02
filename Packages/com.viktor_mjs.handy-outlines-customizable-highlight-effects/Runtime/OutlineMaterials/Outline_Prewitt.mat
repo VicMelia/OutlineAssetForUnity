@@ -46,30 +46,30 @@ Material:
     - _ApplyNoise: 0
     - _BloomIntensity: 1
     - _CustomTexture: 0
-    - _DoubleMode: 0
+    - _DoubleMode: 1
     - _DoubleNormalThickness: 2
-    - _DoubleThickness: 1
+    - _DoubleThickness: 12
     - _EdgeMin: 0.1
     - _FilterSelector: 2
     - _IntermitentSpeed: 3
-    - _LightFactor: 1
+    - _LightFactor: 0.953
     - _NoiseScale: 0.3
     - _NormalNoise: 0
-    - _NormalStrength: 0.7
-    - _NormalThickness: 2.45
-    - _NormalThreshold: 1
+    - _NormalStrength: 0.554
+    - _NormalThickness: 6.34
+    - _NormalThreshold: 0.954
     - _OutlineStrength: 1
-    - _OutlineThickness: 2.65
-    - _StepTime: 0.2
-    - _Threshold: 0.5
+    - _OutlineThickness: 2.34
+    - _StepTime: 200
+    - _Threshold: 0.434
     - _UseBloom: 0
     - _UseIntermitent: 0
     - _UseNormal: 0
     m_Colors:
     - _BloomColor: {r: 1, g: 1, b: 1, a: 1}
-    - _DoubleColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DoubleColor: {r: 0, g: 0, b: 0, a: 1}
     - _NoiseStrength: {r: 0.1, g: 0.1, b: 0, a: 0}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineColor: {r: 1, g: 0.96540874, b: 0.96540874, a: 1}
     - _TexSize: {r: 20, g: 10, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

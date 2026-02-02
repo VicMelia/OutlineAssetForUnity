@@ -31,8 +31,8 @@
                 <ui:VisualElement name="Outer_Outline_Settings_Element" class="inner-box">
                     <ui:Label text="Outer Outline Settings" style="-unity-font-style: bold; font-size: 10px; opacity: 0.7;" />
                     <uie:ColorField label="Outer Color" name="Outer_Color_Field" value="rgb(255,255,255)" binding-path="_doubleColor" />
-                    <ui:Slider label="Outer Thickness" high-value="12" low-value="2.1" value="2.1" show-input-field="true" name="Outer_Thickness_Field" binding-path="_doubleThickness" />
-                    <ui:Slider label="Outer Normal Thickness" high-value="0" low-value="2.1" value="0" show-input-field="true" name="Outer_Normal_Thickness_Field" binding-path="_doubleNormalThickness" />
+                    <ui:Slider label="Outer Thickness" high-value="12" low-value="0" value="2.1" show-input-field="true" name="Outer_Thickness_Field" binding-path="_doubleThickness" />
+                    <ui:Slider label="Outer Normal Thickness" high-value="2.1" low-value="0" value="0" show-input-field="true" name="Outer_Normal_Thickness_Field" binding-path="_doubleNormalThickness" />
                 </ui:VisualElement>
             </ui:Foldout>
             <ui:Foldout text="Light Color" name="Light_Foldout" class="section-foldout light-bg">
@@ -71,7 +71,7 @@
                 <ui:Slider label="Intensity" high-value="5" low-value="1" value="2" show-input-field="true" name="Bloom_Intensity_Field" binding-path="_bloomIntensity" />
                 <ui:Slider label="Intermitent speed" high-value="5" low-value="0.5" value="3" show-input-field="true" name="Intermitent_Speed_Field" binding-path="_bloomIntermitentSpeed" />
             </ui:Foldout>
-            <ui:Foldout text="Custom Texture (Advanced)" name="Texture_Foldout" class="section-foldout texture-bg">
+            <ui:Foldout text="Custom Texture" name="Texture_Foldout" class="section-foldout texture-bg">
                 <ui:EnumField label="Custom Texture" name="Custom_Texture_Mode_Field" binding-path="_textureEffect" />
                 <uie:ObjectField label="Custom Texture" object-type="UnityEngine.Texture2D, UnityEngine.TextCoreFontEngineModule" name="Custom_Texture_Field" type="UnityEngine.Texture2D, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="_customTex" />
                 <ui:VisualElement name="Texture_Size_Element" class="inner-box">
