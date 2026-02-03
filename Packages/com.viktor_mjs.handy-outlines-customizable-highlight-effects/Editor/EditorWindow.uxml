@@ -9,10 +9,10 @@
             <ui:Button text="Setup" name="Setup_Button" style="height: 35px; -unity-font-style: bold;" />
         </ui:VisualElement>
         <ui:ScrollView name="Settings_Screen" style="display: flex; flex-grow: 1;">
-            <ui:Foldout text="Filter Settings" name="Filter_Foldout" class="section-foldout filter-bg">
+            <ui:Foldout text="Filter Settings" name="Filter_Foldout" value="false" class="section-foldout filter-bg">
                 <ui:EnumField label="Filter Mode" name="Filter_Mode_Field" binding-path="_outlineFilter" />
             </ui:Foldout>
-            <ui:Foldout text="Outline Settings" name="Outline_Foldout" value="true" class="section-foldout outline-bg">
+            <ui:Foldout text="Outline Settings" name="Outline_Foldout" value="false" class="section-foldout outline-bg">
                 <ui:EnumField label="Outline Mode" name="Outline_Mode_Field" binding-path="_outlineMode" />
                 <uie:ColorField label="Outline Color" name="Outline_Color_Field" value="rgb(255,255,255)" binding-path="_outlineColor" />
                 <ui:VisualElement name="Depth_Settings_Element" class="inner-box">
@@ -35,16 +35,16 @@
                     <ui:Slider label="Outer Normal Thickness" high-value="2.1" low-value="0" value="0" show-input-field="true" name="Outer_Normal_Thickness_Field" binding-path="_doubleNormalThickness" />
                 </ui:VisualElement>
             </ui:Foldout>
-            <ui:Foldout text="Light Color" name="Light_Foldout" class="section-foldout light-bg">
+            <ui:Foldout text="Light Color" name="Light_Foldout" value="false" class="section-foldout light-bg">
                 <ui:EnumField label="Blending" name="Light_Blending_Field" binding-path="_blendMode" />
                 <ui:Slider label="Factor" high-value="1" low-value="0" value="0.5" show-input-field="true" name="Light_Blending_Factor_Field" binding-path="_lightFactor" />
             </ui:Foldout>
-            <ui:Foldout text="Noise Settings" name="Noise_Foldout" class="section-foldout noise-bg">
+            <ui:Foldout text="Noise Settings" name="Noise_Foldout" value="false" class="section-foldout noise-bg">
                 <ui:EnumField label="Distortion Mode" name="Distortion_Mode_Field" binding-path="_noiseEffect" />
                 <ui:VisualElement name="Wave_Settings_Element" class="inner-box">
                     <ui:Label text="Wave Settings" style="-unity-font-style: bold; font-size: 10px; opacity: 0.7;" />
                     <ui:EnumField label="Frequency" choices="Low, Mid, High, Custom" value="Low" name="Wave_Frequency_Field" binding-path="_noiseFrequency" />
-                    <ui:Slider label="Custom Frequency" high-value="2000" low-value="0.01" value="200" show-input-field="true" name="Wave_Custom_Frequency_Field" binding-path="_stepTime" />
+                    <ui:Slider label="Custom Frequency" high-value="2000" low-value="0.01" value="200" show-input-field="true" name="Wave_Custom_Frequency_Field" binding-path="_noiseScale" />
                     <ui:EnumField label="Direction" choices="X, Y, Both directions" value="Both directions" name="Wave_Direction_Field" binding-path="_distortionAxis" />
                     <ui:Slider label="Intensity (X)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Wave_Intensity_X_Field" binding-path="_noiseStrength.x" />
                     <ui:Slider label="Intensity (Y)" high-value="0.1" low-value="0.01" value="0.01" show-input-field="true" name="Wave_Intensity_Y_Field" binding-path="_noiseStrength.y" />
@@ -65,13 +65,13 @@
                 <ui:EnumField label="Animate Distortion" name="Animate_Distortion_Field" binding-path="_animateLines" />
                 <ui:Slider label="Animation Speed" high-value="0.5" low-value="0.01" value="0.01" show-input-field="true" name="Animate_Speed_Field" binding-path="_stepTime" />
             </ui:Foldout>
-            <ui:Foldout text="Bloom" name="Bloom_Foldout" class="section-foldout bloom-bg">
+            <ui:Foldout text="Bloom" name="Bloom_Foldout" value="false" class="section-foldout bloom-bg">
                 <ui:EnumField label="Bloom Mode" name="Bloom_Mode_Field" binding-path="_bloomEffect" />
                 <uie:ColorField label="Color" name="Bloom_Color_Field" value="rgb(255,255,255)" binding-path="_bloomColor" />
                 <ui:Slider label="Intensity" high-value="5" low-value="1" value="2" show-input-field="true" name="Bloom_Intensity_Field" binding-path="_bloomIntensity" />
                 <ui:Slider label="Intermitent speed" high-value="5" low-value="0.5" value="3" show-input-field="true" name="Intermitent_Speed_Field" binding-path="_bloomIntermitentSpeed" />
             </ui:Foldout>
-            <ui:Foldout text="Custom Texture" name="Texture_Foldout" class="section-foldout texture-bg">
+            <ui:Foldout text="Custom Texture" name="Texture_Foldout" value="false" class="section-foldout texture-bg">
                 <ui:EnumField label="Custom Texture" name="Custom_Texture_Mode_Field" binding-path="_textureEffect" />
                 <uie:ObjectField label="Custom Texture" object-type="UnityEngine.Texture2D, UnityEngine.TextCoreFontEngineModule" name="Custom_Texture_Field" type="UnityEngine.Texture2D, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="_customTex" />
                 <ui:VisualElement name="Texture_Size_Element" class="inner-box">
@@ -80,7 +80,7 @@
                     <ui:Slider label="Intensity (Y)" high-value="20" low-value="0.01" value="0.01" show-input-field="true" name="Texture_Size_Y_Field" binding-path="_texSize.y" />
                 </ui:VisualElement>
             </ui:Foldout>
-            <ui:Foldout text="Layer Mask" name="LayerMask_Foldout" class="section-foldout layer-bg">
+            <ui:Foldout text="Layer Mask" name="LayerMask_Foldout" value="false" class="section-foldout layer-bg">
                 <uie:LayerMaskField label="Exclude from" name="Layer_Mask_Field" binding-path="_excludeLayerMask" />
             </ui:Foldout>
         </ui:ScrollView>

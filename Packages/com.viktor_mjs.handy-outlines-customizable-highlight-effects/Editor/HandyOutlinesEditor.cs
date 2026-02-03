@@ -5,6 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.XR;
+using UnityEditor.SceneManagement;
 
 namespace HandyOutlines
 {
@@ -84,11 +85,23 @@ namespace HandyOutlines
 			CheckSetup();
         }
 
-		/// <summary>
-		/// Loads the settings scriptable object or creates one if it doesn't exist.
-		/// </summary>
-		/// <returns></returns> The loaded or newly created settings scriptable object.
-		private HandyOutlinesSettings LoadSettings()
+        private void OnEnable()
+        {
+            EditorSceneManager.sceneOpened += (scene, mode) => { OnBloomCheckNeeded(); };
+			EditorApplication.hierarchyChanged += () => { OnBloomCheckNeeded(); };
+        }
+
+        private void OnDisable()
+        {
+			EditorSceneManager.sceneOpened -= (scene, mode) => { OnBloomCheckNeeded(); };
+			EditorApplication.hierarchyChanged -= () => { OnBloomCheckNeeded(); };
+        } 
+
+        /// <summary>
+        /// Loads the settings scriptable object or creates one if it doesn't exist.
+        /// </summary>
+        /// <returns></returns> The loaded or newly created settings scriptable object.
+        private HandyOutlinesSettings LoadSettings()
 		{
 			_settings = AssetDatabase.LoadAssetAtPath<HandyOutlinesSettings>(SETTINGS_PATH);
 			if (_settings != null) return _settings;
@@ -142,7 +155,7 @@ namespace HandyOutlines
 			_customScaleField = _root.Q<Slider>("Custom_Scale_Field");
 			_animateLinesField = _root.Q<EnumField>("Animate_Distortion_Field");
 			_animationSpeedField = _root.Q<Slider>("Animate_Speed_Field");
-			_bloomEffectField = _root.Q<EnumField>("Bloom_Effect_Field");
+			_bloomEffectField = _root.Q<EnumField>("Bloom_Mode_Field");
 			_bloomColorField = _root.Q<ColorField>("Bloom_Color_Field");
 			_bloomIntensityField = _root.Q<Slider>("Bloom_Intensity_Field");
 			_bloomIntermitentSpeedField = _root.Q<Slider>("Intermitent_Speed_Field");
@@ -238,6 +251,11 @@ namespace HandyOutlines
 				}
 
 				_settings.UpdateOutlineMaterial(newMat);
+
+				_depthThicknessField.highValue = GetMaxThickness((HandyOutlinesSettings.OutlineFilter)newFilter.enumValueIndex);
+				_normalThicknessField.highValue = GetMaxThickness((HandyOutlinesSettings.OutlineFilter)newFilter.enumValueIndex);
+				_outerThicknessField.highValue = GetMaxThickness((HandyOutlinesSettings.OutlineFilter)newFilter.enumValueIndex) + 4f;
+				_outerNormalThicknessField.highValue = GetMaxThickness((HandyOutlinesSettings.OutlineFilter)newFilter.enumValueIndex) + 4f;
 			}
 			else
 			{
@@ -445,6 +463,7 @@ namespace HandyOutlines
 					_bloomIntermitentSpeedField.style.display = DisplayStyle.None;
 					_outlineColorField.value = Color.white; //Force outline color to white for best bloom results
 					if (_outlineStyleField.value.Equals(HandyOutlinesSettings.OutlineStyle.Double)) _outerColorField.value = Color.white;
+					CheckVolumeSetup();
 					break;
 				case (int)HandyOutlinesSettings.BloomEffect.Intermitent:
 					_bloomColorField.style.display = DisplayStyle.Flex;
@@ -452,6 +471,7 @@ namespace HandyOutlines
 					_bloomIntermitentSpeedField.style.display = DisplayStyle.Flex;
 					_outlineColorField.value = Color.white; //Force outline color to white for best bloom results
 					if (_outlineStyleField.value.Equals(HandyOutlinesSettings.OutlineStyle.Double)) _outerColorField.value = Color.white;
+					CheckVolumeSetup();
 					break;
 			}
 		}
@@ -562,6 +582,9 @@ namespace HandyOutlines
             return null;
         }
 
+		/// <summary>
+		/// Adds the OutlineFeature and the SSAO to the current Universal Render Pipeline Asset.
+		/// </summary>
 		private void AddOutlineFeature()
 		{
 			UniversalRenderPipelineAsset urpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
@@ -611,6 +634,48 @@ namespace HandyOutlines
 			AssetDatabase.Refresh();
 			UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
 		}
+
+		/// <summary>
+		/// Checks and sets up a global volume with Bloom effect if it doesn't already exist.
+		/// </summary>
+		private void CheckVolumeSetup()
+		{
+			Volume volume = FindAnyObjectByType<Volume>();
+			
+			if (volume == null)
+			{
+				GameObject volumeInstance = new GameObject("HandyOutlines_GlobalVolume");
+				volume = volumeInstance.AddComponent<Volume>();
+				volume.isGlobal = true;
+			}
+
+			if (volume.profile == null) volume.profile = CreateInstance<VolumeProfile>();
+
+			if (!volume.profile.TryGet<Bloom>(out var bloom)) volume.profile.Add<Bloom>(true);
+
+			EditorUtility.SetDirty(volume.profile);
+		}
+
+		private void OnBloomCheckNeeded()
+		{
+			if(_settings != null && (HandyOutlinesSettings.BloomEffect)_bloomEffectField.value != HandyOutlinesSettings.BloomEffect.Off)
+			{
+				CheckVolumeSetup();
+			}
+		}
+
+		public int GetMaxThickness(HandyOutlinesSettings.OutlineFilter filter)
+        {
+            switch (filter)
+            {
+                case HandyOutlinesSettings.OutlineFilter.Laplacian:
+                    return 6;
+                case HandyOutlinesSettings.OutlineFilter.DoG:
+                    return 7;
+                default:
+                    return 8;
+            }
+        }
 		#endregion
 	}
 }

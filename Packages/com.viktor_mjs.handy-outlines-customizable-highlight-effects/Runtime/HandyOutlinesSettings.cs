@@ -1,3 +1,4 @@
+using PlasticPipe.PlasticProtocol.Messages;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -96,6 +97,7 @@ namespace HandyOutlines
         [SerializeField] private Texture2D _customTex;
         [SerializeField] private Vector2 _texSize = new Vector2(20f, 10f);
         [SerializeField] private LayerMask _excludeLayerMask = 0;
+        [SerializeField] private Volume _actualVolumeInstance;
         #endregion
 
         public void UpdateOutlineMaterial(Material outlineMaterial = null)
@@ -147,14 +149,31 @@ namespace HandyOutlines
             _outlineMaterial.SetVector("_TexSize", _texSize);
 
             //Global volume (Bloom)
-            /*if (_sceneVolume != null && _sceneVolume.profile != null)
+            _actualVolumeInstance = GameObject.Find("HandyOutlines_GlobalVolume")?.GetComponent<Volume>();
+            if (_actualVolumeInstance != null && _actualVolumeInstance.profile != null)
             {
-                if (_sceneVolume.profile.TryGet<Bloom>(out var bloom))
+                if (_actualVolumeInstance.profile.TryGet<Bloom>(out var bloom))
                 {
+                    bloom.active = true;
+                    bloom.threshold.overrideState = true;
+                    bloom.intensity.overrideState = true;
+                    bloom.scatter.overrideState = true;
                     bloom.tint.overrideState = true;
+                    bloom.highQualityFiltering.overrideState = true;
+                    bloom.clamp.overrideState = false;
+                    bloom.downscale.overrideState = false;
+                    bloom.maxIterations.overrideState = false;
+                    bloom.dirtTexture.overrideState = false;
+                    bloom.dirtIntensity.overrideState = false;
+
+                    //Default bloom values
+                    bloom.threshold.value = 2f;
+                    bloom.intensity.value = 2f;
+                    bloom.scatter.value = 0.5f;
                     bloom.tint.value = _bloomColor;
+                    bloom.highQualityFiltering.value = true;
                 }
-            }*/
+            }
         }
 
         public OutlineFilter GetOutlineFilter()
