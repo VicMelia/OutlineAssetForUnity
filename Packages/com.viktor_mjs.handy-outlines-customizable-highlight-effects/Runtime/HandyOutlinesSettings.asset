@@ -12,36 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a2a0f68b5c28cd499260a372fa4a909, type: 3}
   m_Name: HandyOutlinesSettings
   m_EditorClassIdentifier: 
-  _outlineMaterial: {fileID: 2100000, guid: 89c5bffae9d4c844da0bac29229c9d4a, type: 2}
-  _outlineFilter: 4
-  _outlineMode: 0
+  _outlineMaterial: {fileID: 2100000, guid: e1c2d4d4c3683944bb25ac86916707ce, type: 2}
+  _outlineFilter: 3
+  _outlineMode: 1
   _outlineThickness: 6
   _outlineStrength: 1
-  _outlineThreshold: 0.577
+  _outlineThreshold: 1
   _outlineColor: {r: 1, g: 1, b: 1, a: 1}
   _outlineStyle: 1
-  _doubleThickness: 8
-  _doubleNormalThickness: 0.68
+  _doubleThickness: 7.08
+  _doubleNormalThickness: 7.37
   _doubleColor: {r: 0, g: 0, b: 0, a: 1}
   _blendMode: 0
-  _lightFactor: 0.953
+  _lightFactor: 0
   _noiseEffect: 0
-  _noiseFrequency: 3
-  _animateLines: 0
+  _noiseFrequency: 0
+  _animateLines: 1
   _stepTime: 0.189
-  _noiseScale: 2000
+  _noiseScale: 200
   _distortionAxis: 2
   _noiseStrength: {x: 0.01, y: 0.01}
   _normalThreshold: 1
   _normalStrength: 1
-  _normalThickness: 3.46
+  _normalThickness: 1.74
   _bloomIntensity: 5
-  _bloomColor: {r: 0.37304246, g: 1, b: 0, a: 1}
-  _bloomEffect: 0
-  _bloomIntermitentSpeed: 3.33
-  _textureEffect: 1
+  _bloomColor: {r: 0, g: 0.69363236, b: 1, a: 1}
+  _bloomEffect: 1
+  _bloomIntermitentSpeed: 5
+  _textureEffect: 0
   _customTex: {fileID: 0}
-  _texSize: {x: 20, y: 10}
+  _texSize: {x: 6.26, y: 8.63}
   _excludeLayerMask:
     serializedVersion: 2
     m_Bits: 0

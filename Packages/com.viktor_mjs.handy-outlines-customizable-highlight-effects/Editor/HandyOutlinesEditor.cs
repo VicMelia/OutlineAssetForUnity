@@ -174,6 +174,7 @@ namespace HandyOutlines
 		{
 			OnFilterChanged(_serializedSettings.FindProperty("_outlineFilter"));
 			OnModeChanged(_serializedSettings.FindProperty("_outlineMode"));
+			OnDepthThickenessChanged(_serializedSettings.FindProperty("_outlineThickness"));
 			OnStyleChanged(_serializedSettings.FindProperty("_outlineStyle"));
 			OnBlendingChanged(_serializedSettings.FindProperty("_blendMode"));
 			OnDistortionChanged(_serializedSettings.FindProperty("_noiseEffect"));
@@ -193,6 +194,7 @@ namespace HandyOutlines
 			_setupButton.clicked += OnSetupButtonClicked;
 			_root.TrackPropertyValue(_serializedSettings.FindProperty("_outlineFilter"), newFilter => OnFilterChanged(newFilter));
 			_root.TrackPropertyValue(_serializedSettings.FindProperty("_outlineMode"), newMode => OnModeChanged(newMode));
+			_root.TrackPropertyValue(_serializedSettings.FindProperty("_outlineThickness"), newThickness => OnDepthThickenessChanged(newThickness));
 			_root.TrackPropertyValue(_serializedSettings.FindProperty("_outlineStyle"), newStyle => OnStyleChanged(newStyle));
 			_root.TrackPropertyValue(_serializedSettings.FindProperty("_blendMode"), newBlending => OnBlendingChanged(newBlending));
 			_root.TrackPropertyValue(_serializedSettings.FindProperty("_noiseEffect"), newDistortion => OnDistortionChanged(newDistortion));
@@ -280,6 +282,14 @@ namespace HandyOutlines
 					_normalsSettingsElement.style.display = DisplayStyle.Flex;
 					break;
 			}
+		}
+
+
+		private void OnDepthThickenessChanged(SerializedProperty newThickness)
+		{
+			_normalThicknessField.highValue = newThickness.floatValue;
+			_outerThicknessField.highValue = newThickness.floatValue + 4f;
+			_outerNormalThicknessField.highValue = newThickness.floatValue + 4f;
 		}
 
 		/// <summary>

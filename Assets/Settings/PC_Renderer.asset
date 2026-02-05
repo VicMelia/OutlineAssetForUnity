@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5025471201384119235
+--- !u!114 &-3961168047959765686
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -26,25 +26,6 @@ MonoBehaviour:
     BlurQuality: 0
     Falloff: 100
     SampleCount: -1
---- !u!114 &-24907366548174189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67d6f8eaade971a4f8003ba00d87535c, type: 3}
-  m_Name: Handy Outline Feature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  settings:
-    excludedLayerMask:
-      serializedVersion: 2
-      m_Bits: 0
-  injectionPoint: 550
-  material: {fileID: 2100000, guid: 89c5bffae9d4c844da0bac29229c9d4a, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,8 +51,8 @@ MonoBehaviour:
     probeSamplingDebugTexture: {fileID: 2800000, guid: 24ec0e140fb444a44ab96ee80844e18e, type: 3}
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
-  - {fileID: -5025471201384119235}
-  - {fileID: -24907366548174189}
+  - {fileID: -3961168047959765686}
+  - {fileID: 9021116549666280795}
   m_RendererFeatureMap: 
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
@@ -98,3 +79,22 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
+--- !u!114 &9021116549666280795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67d6f8eaade971a4f8003ba00d87535c, type: 3}
+  m_Name: Handy Outline Feature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    excludedLayerMask:
+      serializedVersion: 2
+      m_Bits: 0
+  injectionPoint: 550
+  material: {fileID: 2100000, guid: a04f50bc79973044db6115db3c216a85, type: 2}
